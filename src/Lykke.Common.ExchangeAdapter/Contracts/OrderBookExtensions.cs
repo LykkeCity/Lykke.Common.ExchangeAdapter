@@ -4,7 +4,7 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
 {
     public static class OrderBookExtensions
     {
-        public static bool TryDetectNegativeSpread(this OrderBook orderBook, out string info)
+        public static bool TryDetectNegativeSpread(this OrderBook orderBook, out string error)
         {
             if (orderBook.Asks.Any() && orderBook.Bids.Any())
             {
@@ -12,15 +12,15 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
                 var bestBid = orderBook.Bids.Max(ob => ob.Price);
                 if (bestAsk < bestBid)
                 {
-                    info = $"Orderbook for asset {orderBook.Asset} has negative spread, " +
-                           $"minAsk: {bestAsk}, " +
-                           $"maxBid: {bestBid}," +
-                           $"spread: {bestAsk - bestBid}";
+                    error = $"Orderbook for asset {orderBook.Asset} has negative spread, " +
+                            $"minAsk: {bestAsk}, " +
+                            $"maxBid: {bestBid}," +
+                            $"spread: {bestAsk - bestBid}";
                     return true;
                 }
             }
 
-            info = null;
+            error = null;
             return false;
         }
     }

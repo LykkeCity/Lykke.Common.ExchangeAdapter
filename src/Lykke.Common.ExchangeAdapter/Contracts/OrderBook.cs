@@ -57,24 +57,21 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
                 Bids.ToArray());
         }
 
-        private static void UpdateOrderBook(
-            IDictionary<decimal, OrderBookItem> collection,
-            decimal price,
-            decimal volume)
-        {
-            if (volume == 0)
-            {
-                collection.Remove(price);
-            }
-            else
-            {
-                collection[price] = new OrderBookItem(price, volume);
-            }
-        }
-
         public void UpdateAsk(decimal price, decimal volume)
         {
             UpdateOrderBook(_asks, price, volume);
+        }
+
+        private static void UpdateOrderBook(IDictionary<decimal, OrderBookItem> c, decimal price, decimal volume)
+        {
+            if (volume == 0)
+            {
+                c.Remove(price);
+            }
+            else
+            {
+                c[price] = new OrderBookItem(price, volume);
+            }
         }
 
         public void UpdateBid(decimal price, decimal volume)
