@@ -6,8 +6,8 @@ package Lykke.ExchangeAdapter.Spot;
 
 message Wallet {
     string asset = 1;
-    Decimal balance = 2;
-    Decimal reserved = 3;
+    DecimalP balance = 2;
+    DecimalP reserved = 3;
 }
 
 message WalletsList {
@@ -21,8 +21,8 @@ enum TradeType {
 
 message CreateLimitOrderCommand {
     string instrument = 1;
-    Decimal price = 2;
-    Decimal amount = 3;
+    DecimalP price = 2;
+    DecimalP amount = 3;
     TradeType tradeType = 4;
 }
 
@@ -61,14 +61,14 @@ enum OrderStatus {
 message Order {
     string orderId = 1;
     string instrument = 2;
-    Decimal price = 3;
-    Decimal originalAmount = 4;
+    DecimalP price = 3;
+    DecimalP originalAmount = 4;
     TradeType tradeType = 5;
-    DateTime CreatedTime = 6;
-    Decimal avgExecutionPrice = 7;
+    DateTimeP CreatedTime = 6;
+    DecimalP avgExecutionPrice = 7;
     OrderStatus status = 8;
-    Decimal executedAmount = 9;
-    Decimal remainingAmount = 10;
+    DecimalP executedAmount = 9;
+    DecimalP remainingAmount = 10;
 }
 
 message GetLimitOrdersResult {

@@ -1,27 +1,29 @@
-﻿namespace Lykke.Common.ExchangeAdapter.Grpc
+﻿using Lykke.Common.Proto;
+
+namespace Lykke.Common.ExchangeAdapter.Grpc
 {
     public static class ProtoExtensions
     {
-        public static System.DateTime ToSystem(this DateTime dateTime)
+        public static System.DateTime ToSystem(this DateTimeP dateTime)
         {
             return System.DateTime.SpecifyKind(new System.DateTime((long)dateTime.Ticks), System.DateTimeKind.Utc);
         }
 
-        public static DateTime ToProto(this System.DateTime dateTime)
+        public static DateTimeP ToProto(this System.DateTime dateTime)
         {
-            return new DateTime { Ticks = (ulong)dateTime.Ticks };
+            return new DateTimeP { Ticks = (ulong)dateTime.Ticks };
         }
 
-        public static System.Decimal ToSystem(this Decimal dec)
+        public static System.Decimal ToSystem(this DecimalP dec)
         {
             return new System.Decimal(new [] { dec.Lo, dec.Mid, dec.Hi, dec.SignScale });
         }
 
-        public static Decimal ToProto(this System.Decimal dec)
+        public static DecimalP ToProto(this System.Decimal dec)
         {
             var bits = System.Decimal.GetBits(dec);
 
-            return new Decimal
+            return new DecimalP
             {
                 Lo = bits[0],
                 Mid = bits[1],
