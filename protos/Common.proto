@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+message DateTime {
+    uint64 ticks = 1;
+}
+
+message Decimal {
+    int32 lo = 1;          // the first 32 bits of the underlying value
+    int32 mid = 2;         // the second 32 bits of the underlying value
+    int32 hi = 3;          // the last 32 bis of the underlying value
+    int32 signScale = 4;   // the number of decimal digits, and the sign
+}
+
+message Void {}

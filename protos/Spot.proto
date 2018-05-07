@@ -1,0 +1,95 @@
+syntax = "proto3";
+
+import "Common.proto";
+
+package Lykke.ExchangeAdapter.Spot;
+
+message Wallet {
+    string asset = 1;
+    Decimal balance = 2;
+    Decimal reserved = 3;
+}
+
+message WalletsList {
+    repeated Wallet wallets = 1;
+}
+
+enum TradeType {
+    Buy = 0;
+    Sell = 1;
+}
+
+message CreateLimitOrderCommand {
+    string instrument = 1;
+    Decimal price = 2;
+    Decimal amount = 3;
+    TradeType tradeType = 4;
+}
+
+enum CreateLimitOrderError {
+    VolumeTooSmall = 0;
+    NotEnoughBalance = 1;
+    IncorrectPrice = 2;
+    IncorrectTradeType = 3;
+    IncorrectInstrument = 4;
+}
+
+message CreateLimitOrderResult {
+    oneof result {
+        string OrderId = 1;
+        CreateLimitOrderError error = 2;
+    }
+}
+
+enum CancelOrderError {
+    NotFound = 0;
+}
+
+message CancelOrderResult {
+    oneof result {
+        Void Ok = 1;
+        CancelOrderError error = 2;
+    }
+}
+
+enum OrderStatus {
+    Active = 0;
+    Cancelled = 1;
+    Fill = 2;
+}
+
+message Order {
+    string orderId = 1;
+    string instrument = 2;
+    Decimal price = 3;
+    Decimal originalAmount = 4;
+    TradeType tradeType = 5;
+    DateTime CreatedTime = 6;
+    Decimal avgExecutionPrice = 7;
+    OrderStatus status = 8;
+    Decimal executedAmount = 9;
+    Decimal remainingAmount = 10;
+}
+
+message GetLimitOrdersResult {
+    repeated Order orders = 1;
+}
+
+message OrderId {
+    string OrderId = 1;
+}
+
+message ReplaceLimitOrderResult {
+    oneof Result {
+        Void Ok = 1;
+        Void VolumeToSmall = 2;
+    }
+}
+
+service Spot {
+    rpc GetWallets (Void) returns (WalletsList);
+    rpc CreateLimitOrder (CreateLimitOrderCommand) returns (CreateLimitOrderResult);
+    rpc CancelOrder(OrderId) returns (CancelOrderResult);
+    rpc GetLimitOrders (Void) returns (GetLimitOrdersResult);
+    rpc ReplaceLimitOrder(Void) returns (ReplaceLimitOrderResult);
+}
