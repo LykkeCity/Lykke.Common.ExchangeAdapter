@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lykke.Common.ExchangeAdapte
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lykke.Common.ExchangeAdapter.Grpc", "src\Lykke.Common.ExchangeAdapter.Grpc\Lykke.Common.ExchangeAdapter.Grpc.csproj", "{84505630-A394-4A19-8A4A-5AF7DC699145}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lykke.Common.ExchangeAdapter.Client", "src\Lykke.Common.ExchangeAdapter.Client\Lykke.Common.ExchangeAdapter.Client.csproj", "{4037ACE8-8860-4CE2-AFFC-8F0D027FBE25}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{84505630-A394-4A19-8A4A-5AF7DC699145}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84505630-A394-4A19-8A4A-5AF7DC699145}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84505630-A394-4A19-8A4A-5AF7DC699145}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4037ACE8-8860-4CE2-AFFC-8F0D027FBE25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4037ACE8-8860-4CE2-AFFC-8F0D027FBE25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4037ACE8-8860-4CE2-AFFC-8F0D027FBE25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4037ACE8-8860-4CE2-AFFC-8F0D027FBE25}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
