@@ -4,11 +4,10 @@ using System.Threading.Tasks;
 
 namespace Lykke.Common.ExchangeAdapter.Client
 {
-    public class XApiKeyHandler : DelegatingHandler
+    internal class XApiKeyHandler : DelegatingHandler
     {
         private readonly string _apiKey;
 
-        /// <inheritdoc />
         public XApiKeyHandler(string apiKey)
         {
             _apiKey = apiKey;
