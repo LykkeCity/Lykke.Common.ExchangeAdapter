@@ -8,6 +8,31 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
 {
     public sealed class OrderBook
     {
+        private bool Equals(OrderBook other)
+        {
+            return Equals(_asks, other._asks) && Equals(_bids, other._bids) && string.Equals(Source, other.Source)
+                   && string.Equals(Asset, other.Asset);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj is OrderBook && Equals((OrderBook) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = (_asks != null ? _asks.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_bids != null ? _bids.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Source != null ? Source.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Asset != null ? Asset.GetHashCode() : 0);
+                return hashCode;
+            }
+        }
+
         private readonly IDictionary<decimal, OrderBookItem> _asks = new Dictionary<decimal, OrderBookItem>();
         private readonly IDictionary<decimal, OrderBookItem> _bids = new Dictionary<decimal, OrderBookItem>();
 
