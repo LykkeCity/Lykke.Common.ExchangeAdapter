@@ -8,9 +8,20 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
 {
     public sealed class OrderBook
     {
+        private static bool CompareDictionaries<TK, TV>(
+            IDictionary<TK, TV> first,
+            IDictionary<TK, TV> second)
+        {
+            return first.Count == second.Count && second.All(entry => first[entry.Key].Equals(entry.Value));
+        }
+
         private bool Equals(OrderBook other)
         {
-            return Equals(_asks, other._asks) && Equals(_bids, other._bids) && string.Equals(Source, other.Source)
+            var asksEqual = CompareDictionaries(_asks, other._asks);
+
+            var bidsEqual = CompareDictionaries(_bids, other._bids);
+
+            return asksEqual && bidsEqual && string.Equals(Source, other.Source)
                    && string.Equals(Asset, other.Asset);
         }
 
