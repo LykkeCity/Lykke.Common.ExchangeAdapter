@@ -12,7 +12,10 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
             IDictionary<TK, TV> first,
             IDictionary<TK, TV> second)
         {
-            return first.Count == second.Count && second.All(entry => first[entry.Key].Equals(entry.Value));
+            return first.Count == second.Count
+                   && second.All(
+                       entry => first.TryGetValue(entry.Key, out var f)
+                                && entry.Value.Equals(f));
         }
 
         private bool Equals(OrderBook other)

@@ -37,5 +37,16 @@ namespace Lykke.Common.ExchangeAdapter.Tests
             Assert.IsFalse(ob1.Equals(ob2));
         }
 
+        [Test]
+        public void add_different_items_to_each_orderbook_with_different_keys()
+        {
+            var ob1 = new OrderBook {Asset = "asset"};
+            var ob2 = new OrderBook {Asset = "asset"};
+
+            ob1.UpdateAsk(10, 5);
+            ob2.UpdateAsk(8, 7);
+
+            Assert.IsFalse(ob1.Equals(ob2));
+        }
     }
 }
