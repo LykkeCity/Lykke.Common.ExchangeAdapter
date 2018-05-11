@@ -10,54 +10,54 @@ namespace Lykke.Common.ExchangeAdapter.SpotController
         /// See your wallet balances 
         /// </summary>
         [Get("/spot/getWallets")]
-        Task<GetWalletsResponse> GetWalletBalances();
+        Task<GetWalletsResponse> GetWalletBalancesAsync();
 
         /// <summary>
         /// Get all limit order 
         /// </summary>
         [Get("/spot/getLimitOrders")]
-        Task<GetLimitOrdersResponse> GetLimitOrders(string orderIds, string instruments);
+        Task<GetLimitOrdersResponse> GetLimitOrdersAsync();
 
         /// <summary>
         /// Get order by Id
         /// </summary>
         [Get("/spot/limitOrderStatus")]
-        Task<OrderModel> LimitOrderStatus(long orderId);
+        Task<OrderModel> LimitOrderStatusAsync(long orderId);
 
         /// <summary>
         /// Get order by Id
         /// </summary>
         [Get("/spot/marketOrderStatus")]
-        Task<OrderModel> MarketOrderStatus(long orderId);
+        Task<OrderModel> MarketOrderStatusAsync(long orderId);
 
         /// <summary>
         /// Create Limit order 
         /// </summary>
         [Post("/spot/createLimitOrder")]
-        Task<OrderIdResponse> CreateLimitOrder(LimitOrderRequest request);
+        Task<OrderIdResponse> CreateLimitOrderAsync(LimitOrderRequest request);
 
         /// <summary>
         /// Cancel order 
         /// </summary>
         [Post("/spot/cancelOrder")]
-        Task<CancelLimitOrderResponse> CancelLimitOrder(CancelLimitOrderRequest request);
+        Task<CancelLimitOrderResponse> CancelLimitOrderAsync(CancelLimitOrderRequest request);
 
         /// <summary>
         /// Replace limit order. Cancel one and create new. 
         /// </summary>
         [Get("/spot/replaceLimitOrder")]
-        Task<OrderIdResponse> ReplaceLimitOrder(ReplaceLimitOrderRequest request);
+        Task<OrderIdResponse> ReplaceLimitOrderAsync(ReplaceLimitOrderRequest request);
 
         /// <summary>
         /// Create Market order 
         /// </summary>
         [Post("/spot/createMarketOrder")]
-        Task<OrderIdResponse> CreateMarketOrder(MarketOrderRequest request);
+        Task<OrderIdResponse> CreateMarketOrderAsync(MarketOrderRequest request);
 
         /// <summary>
         /// View your inactive (history) orders
         /// </summary>
         [Get("/spot/getOrdersHistory")]
-        Task<GetOrdersHistoryResponse> GetOrdersHistory();
+        Task<GetOrdersHistoryResponse> GetOrdersHistoryAsync();
     }
 }
