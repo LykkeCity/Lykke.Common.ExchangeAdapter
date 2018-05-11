@@ -2,11 +2,11 @@ syntax = "proto3";
 
 option csharp_namespace = "Lykke.Common.Proto";
 
-message DateTimeP {
+message DateTime {
     uint64 ticks = 1;
 }
 
-message DecimalP {
+message Decimal {
     int32 lo = 1;          // the first 32 bits of the underlying value
     int32 mid = 2;         // the second 32 bits of the underlying value
     int32 hi = 3;          // the last 32 bis of the underlying value
