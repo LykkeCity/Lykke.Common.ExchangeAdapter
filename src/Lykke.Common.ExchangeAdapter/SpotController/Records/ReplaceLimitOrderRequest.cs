@@ -8,6 +8,6 @@ namespace Lykke.Common.ExchangeAdapter.SpotController.Records
         /// id of order for cancel(repalce)
         /// </summary>
         [JsonProperty("orderId")]
-        public long OrderIdToCancel { get; set; }
+        public string OrderIdToCancel { get; set; }
     }
 }

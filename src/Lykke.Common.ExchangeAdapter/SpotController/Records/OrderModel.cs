@@ -11,7 +11,7 @@ namespace Lykke.Common.ExchangeAdapter.SpotController.Records
         /// OrderId
         /// </summary>
         [JsonProperty("orderId")]
-        public long Id { get; set; }
+        public string Id { get; set; }
 
         /// <summary>
         /// The instrument (pair) name the order belongs to

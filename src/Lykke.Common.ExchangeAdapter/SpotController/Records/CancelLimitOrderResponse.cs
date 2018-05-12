@@ -7,6 +7,6 @@ namespace Lykke.Common.ExchangeAdapter.SpotController.Records
     {
         [JsonProperty("orderId")]
         [Required]
-        public long OrderId { get; set; }
+        public string OrderId { get; set; }
     }
 }
