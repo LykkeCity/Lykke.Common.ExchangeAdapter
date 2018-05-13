@@ -22,13 +22,13 @@ namespace Lykke.Common.ExchangeAdapter.SpotController
         /// Get order by Id
         /// </summary>
         [Get("/spot/limitOrderStatus")]
-        Task<OrderModel> LimitOrderStatusAsync(long orderId);
+        Task<OrderModel> LimitOrderStatusAsync(string orderId);
 
         /// <summary>
         /// Get order by Id
         /// </summary>
         [Get("/spot/marketOrderStatus")]
-        Task<OrderModel> MarketOrderStatusAsync(long orderId);
+        Task<OrderModel> MarketOrderStatusAsync(string orderId);
 
         /// <summary>
         /// Create Limit order 
