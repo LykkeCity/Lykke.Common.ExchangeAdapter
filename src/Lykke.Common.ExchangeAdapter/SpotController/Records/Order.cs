@@ -1,7 +1,8 @@
 ﻿using System;
+using Lykke.Common.ExchangeAdapter.Contracts;
 using Newtonsoft.Json;
 
-namespace Lykke.Common.ExchangeAdapter.Contracts
+namespace Lykke.Common.ExchangeAdapter.SpotController.Records
 {
     public sealed class Order
     {

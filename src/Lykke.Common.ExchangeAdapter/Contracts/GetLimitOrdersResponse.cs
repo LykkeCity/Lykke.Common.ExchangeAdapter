@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Lykke.Common.ExchangeAdapter.SpotController.Records;
 using Newtonsoft.Json;
 
 namespace Lykke.Common.ExchangeAdapter.Contracts
