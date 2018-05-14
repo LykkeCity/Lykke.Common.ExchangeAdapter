@@ -1,6 +1,4 @@
-﻿using Lykke.Common.Proto;
-
-namespace Lykke.Common.Proto
+﻿namespace Lykke.Common.Proto
 {
     public partial class DateTime
     {
