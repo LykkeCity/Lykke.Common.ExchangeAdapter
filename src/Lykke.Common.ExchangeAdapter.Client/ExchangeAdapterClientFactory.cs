@@ -8,20 +8,20 @@ namespace Lykke.Common.ExchangeAdapter.Client
 {
     public class ExchangeAdapterClientFactory
     {
-        private readonly IReadOnlyDictionary<Adapter, AdapterEndpoint> _adapters;
+        private readonly IReadOnlyDictionary<string, AdapterEndpoint> _adapters;
 
-        private static readonly ConcurrentDictionary<Adapter, ISpotController> Instances
-            = new ConcurrentDictionary<Adapter, ISpotController>();
+        private static readonly ConcurrentDictionary<string, ISpotController> Instances
+            = new ConcurrentDictionary<string, ISpotController>();
 
         public ExchangeAdapterClientFactory(
-            IReadOnlyDictionary<Adapter, AdapterEndpoint> adapters)
+            IReadOnlyDictionary<string, AdapterEndpoint> adapters)
         {
             _adapters = adapters;
         }
 
-        public ISpotController this[Adapter adapter] => Instances.GetOrAdd(adapter, CreateNewClient);
+        public ISpotController this[string adapter] => Instances.GetOrAdd(adapter, CreateNewClient);
 
-        private ISpotController CreateNewClient(Adapter adapter)
+        private ISpotController CreateNewClient(string adapter)
         {
             if (!_adapters.TryGetValue(adapter, out var endpoint))
             {
