@@ -81,10 +81,10 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
         public DateTime Timestamp { get; set; }
 
         [JsonProperty("asks")]
-        public IEnumerable<OrderBookItem> Asks => _asks.Values;
+        public IEnumerable<OrderBookItem> Asks => _asks.Values.OrderBy(x => x.Price);
 
         [JsonProperty("bids")]
-        public IEnumerable<OrderBookItem> Bids => _bids.Values;
+        public IEnumerable<OrderBookItem> Bids => _bids.Values.OrderByDescending(x => x.Price);
 
         public OrderBook Clone(DateTime timestamp)
         {

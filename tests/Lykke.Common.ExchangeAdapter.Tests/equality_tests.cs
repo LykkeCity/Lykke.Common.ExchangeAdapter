@@ -1,4 +1,5 @@
-﻿using Lykke.Common.ExchangeAdapter.Contracts;
+﻿using System.Linq;
+using Lykke.Common.ExchangeAdapter.Contracts;
 using NUnit.Framework;
 
 namespace Lykke.Common.ExchangeAdapter.Tests
@@ -47,6 +48,34 @@ namespace Lykke.Common.ExchangeAdapter.Tests
             ob2.UpdateAsk(8, 7);
 
             Assert.IsFalse(ob1.Equals(ob2));
+        }
+
+        [Test]
+        public void asks_sorted_ascend()
+        {
+            var ob = new OrderBook {Asset = "asset"};
+            ob.UpdateAsk(1, 1);
+            ob.UpdateAsk(3, 1);
+            ob.UpdateAsk(2, 1);
+
+            var askPrices = ob.Asks.Select(x => x.Price).ToArray();
+
+            Assert.AreEqual(3, askPrices.Length);
+            Assert.AreEqual(new[] {1M, 2M, 3M}, askPrices);
+        }
+
+        [Test]
+        public void bids_sorted_descend()
+        {
+            var ob = new OrderBook {Asset = "asset"};
+            ob.UpdateBid(1, 1);
+            ob.UpdateBid(3, 1);
+            ob.UpdateBid(2, 1);
+
+            var bidsPrices = ob.Bids.Select(x => x.Price).ToArray();
+
+            Assert.AreEqual(3, bidsPrices.Length);
+            Assert.AreEqual(new[] {3M, 2M, 1M}, bidsPrices);
         }
     }
 }
