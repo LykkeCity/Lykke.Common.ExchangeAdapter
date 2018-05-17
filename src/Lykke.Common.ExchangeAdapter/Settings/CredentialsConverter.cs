@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Lykke.Common.ExchangeAdapter.Settings
 {
@@ -33,7 +35,10 @@ namespace Lykke.Common.ExchangeAdapter.Settings
                 case JsonToken.Null:
                     return existingValue;
                 case JsonToken.StartArray:
-                    pairs = serializer.Deserialize<IEnumerable<KeyValuePair<string, T>>>(reader);
+                    var items = serializer.Deserialize<IEnumerable<JToken>>(reader);
+
+                    pairs = items.Select(ParseCreds);
+
                     break;
                 case JsonToken.StartObject:
                     pairs = serializer.Deserialize<IDictionary<string, T>>(reader).AsEnumerable();
@@ -50,6 +55,21 @@ namespace Lykke.Common.ExchangeAdapter.Settings
             }
 
             return result;
+        }
+
+        private static KeyValuePair<string, T> ParseCreds(JToken jToken)
+        {
+            if (jToken is JObject o)
+            {
+                if (!o.ContainsKey("InternalApiKey"))
+                    throw new JsonSerializationException("Expected key InternalApiKey");
+                return KeyValuePair.Create(
+                    o["InternalApiKey"].Value<string>(), o.ToObject<T>());
+            }
+            else
+            {
+                throw new JsonSerializationException("Json object expected");
+            }
         }
     }
 }

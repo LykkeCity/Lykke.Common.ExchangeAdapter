@@ -49,11 +49,8 @@ namespace Lykke.Common.ExchangeAdapter.Tests
     ""Credentials"":
     [
         {
-            ""Key"": ""key1"",
-            ""Value"":
-            {
-                ""Token"": ""6E564569-38C1-4743-B27E-7DFDA3B32F26""
-            }
+            ""InternalApiKey"": ""key1"",
+            ""Token"": ""6E564569-38C1-4743-B27E-7DFDA3B32F26""
         }
     ]
 }";
