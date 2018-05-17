@@ -49,7 +49,7 @@ namespace Lykke.Common.ExchangeAdapter.SpotController.Records
         [JsonProperty("avgExecutionPrice")]
         public decimal AvgExecutionPrice { get; set; }
 
-        [JsonProperty("status")]
+        [JsonProperty("status"), JsonConverter(typeof(StringEnumConverter))]
         public OrderStatus ExecutionStatus { get; set; }
 
         /// <summary>
