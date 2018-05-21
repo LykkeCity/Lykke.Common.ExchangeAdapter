@@ -11,13 +11,22 @@ using Newtonsoft.Json;
 
 namespace Lykke.ExchangeAdapter.ConsoleClient
 {
+    public enum Command
+    {
+        Workflow,
+        Cancel
+    }
+
     public sealed class CommandOptions
     {
+        public Command Command { get; set; } = Command.Workflow;
         public string AdapterUrl { get; set; }
         public string ApiKey { get; set; }
+        public string OrderId { get; set; }
         public string Asset { get; set; }
         public decimal Price { get; set; }
         public decimal Volume { get; set; }
+        public TradeType TradeType { get; set; } = TradeType.Sell;
     }
 
     class Program
@@ -38,12 +47,17 @@ namespace Lykke.ExchangeAdapter.ConsoleClient
 
             try
             {
-                await GetBalances();
-                var id = await CreateLimitOrder();
-                await ShowLimitOrder(id);
-                await CancelLimitOrder(id);
-                await ShowLimitOrder(id);
-                await GetBalances();
+                switch (_options.Command)
+                {
+                    case Command.Workflow:
+                        await WholeWorkflow();
+                        break;
+                    case Command.Cancel:
+                        await CancelLimitOrder(_options.OrderId);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
             }
             catch (Exception ex)
             {
@@ -53,6 +67,16 @@ namespace Lykke.ExchangeAdapter.ConsoleClient
             }
 
             return 0;
+        }
+
+        private static async Task WholeWorkflow()
+        {
+            await GetBalances();
+            var id = await CreateLimitOrder();
+            await ShowLimitOrder(id);
+            await CancelLimitOrder(id);
+            await ShowLimitOrder(id);
+            await GetBalances();
         }
 
         private static void Announce(string msg)
@@ -81,7 +105,7 @@ namespace Lykke.ExchangeAdapter.ConsoleClient
 
         private static async Task<string> CreateLimitOrder()
         {
-            Announce($"Creating an order for instrument {_options.Asset}, " +
+            Announce($"Creating a {_options.TradeType:G} order for instrument {_options.Asset}, " +
                      $"price: {_options.Price}, volume: {_options.Volume}");
 
             var order = await _client.CreateLimitOrderAsync(new LimitOrderRequest
@@ -89,7 +113,7 @@ namespace Lykke.ExchangeAdapter.ConsoleClient
                 Instrument = _options.Asset,
                 Price = _options.Price,
                 Volume = _options.Volume,
-                TradeType = TradeType.Buy
+                TradeType = _options.TradeType
             });
 
             Console.WriteLine(Dump(order));
@@ -130,11 +154,20 @@ namespace Lykke.ExchangeAdapter.ConsoleClient
         {
             Console.WriteLine(@"
 Usage: dotnet Lykke.ExchangeAdapter.ConsoleClient.dll [OPTIONS]:
-    -url=<adapter-url>    Adapter Url                     (REQUIRED)
-    -key=<x-api-key>      API-KEY to authenticate client  (REQUIRED)
-    -asset=<symbol>       Asset (Lykke currencies pair)   (REQUIRED)
-    -p=<price>            Price of the order              (REQUIRED)
-    -v=<volume>           Volume of the order             (REQUIRED)");
+    -url=<adapter-url>    Adapter Url                         (REQUIRED)
+    -key=<x-api-key>      API-KEY to authenticate client      (REQUIRED)
+    -c=<cancel/workflow>  Run whole workflow or just cancel order
+
+  Workflow options:
+
+    -asset=<symbol>       Asset (Lykke currencies pair)       (REQUIRED)
+    -p=<price>            Price of the order                  (REQUIRED)
+    -v=<volume>           Volume of the order                 (REQUIRED)
+    -t=<buy/sell>         Type of the order                   (default = sell)
+
+  Cancel options:
+
+    -id=<orderId>                                             (REQUIRED)");
         }
 
         private static bool TryBuildCommandOptions(string[] args, out CommandOptions options)
@@ -145,7 +178,10 @@ Usage: dotnet Lykke.ExchangeAdapter.ConsoleClient.dll [OPTIONS]:
                 { "-key",     nameof(CommandOptions.ApiKey) },
                 { "-asset",   nameof(CommandOptions.Asset) },
                 { "-p",       nameof(CommandOptions.Price) },
-                { "-v",       nameof(CommandOptions.Volume) }
+                { "-v",       nameof(CommandOptions.Volume) },
+                { "-t",       nameof(CommandOptions.TradeType) },
+                { "-c",       nameof(CommandOptions.Command) },
+                { "-id",      nameof(CommandOptions.OrderId) }
             };
 
             var root = new ConfigurationBuilder()
@@ -155,11 +191,21 @@ Usage: dotnet Lykke.ExchangeAdapter.ConsoleClient.dll [OPTIONS]:
             options = new CommandOptions();
             root.Bind(options);
 
-            var result = IsDefault(options.Asset);
-            result = result && IsDefault(options.AdapterUrl);
-            result = result && IsDefault(options.ApiKey);
-            result = result && IsDefault(options.Price);
-            result = result && IsDefault(options.Volume);
+            var result = IsDefault(options.AdapterUrl) && IsDefault(options.ApiKey);
+
+            switch (options.Command)
+            {
+                case Command.Workflow:
+                    result = result && IsDefault(options.Asset);
+                    result = result && IsDefault(options.Price);
+                    result = result && IsDefault(options.Volume);
+                    break;
+                case Command.Cancel:
+                    result = result && IsDefault(options.OrderId);
+                    break;
+                default:
+                    return false;
+            }
 
             return result;
         }
