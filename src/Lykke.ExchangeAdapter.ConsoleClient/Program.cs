@@ -73,10 +73,22 @@ namespace Lykke.ExchangeAdapter.ConsoleClient
         {
             await GetBalances();
             var id = await CreateLimitOrder();
+            await Sleep(TimeSpan.FromSeconds(10));
             await ShowLimitOrder(id);
             await CancelLimitOrder(id);
+            await Sleep(TimeSpan.FromSeconds(10));
             await ShowLimitOrder(id);
             await GetBalances();
+        }
+
+        private static async Task Sleep(TimeSpan delay)
+        {
+            var prevColor = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.Write($"Sleeping for {delay}...");
+            Console.ForegroundColor = prevColor;
+            await Task.Delay(delay);
+            Console.WriteLine();
         }
 
         private static void Announce(string msg)
