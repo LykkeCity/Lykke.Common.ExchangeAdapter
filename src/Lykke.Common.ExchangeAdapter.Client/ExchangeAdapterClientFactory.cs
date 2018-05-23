@@ -25,11 +25,12 @@ namespace Lykke.Common.ExchangeAdapter.Client
         {
             if (!_adapters.TryGetValue(adapter, out var endpoint))
             {
-                throw new ArgumentException($"No service endpoint defined for {adapter:G}", nameof(adapter));
+                throw new ArgumentException($"No service endpoint defined for {adapter}", nameof(adapter));
             }
 
              var builder = new HttpClientGeneratorBuilder(endpoint.Uri.ToString())
                  .WithAdditionalDelegatingHandler(new XApiKeyHandler(endpoint.XApiKey))
+                 .WithoutRetries()
                  .Create();
 
 
