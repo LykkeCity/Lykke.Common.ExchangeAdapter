@@ -7,7 +7,8 @@ namespace Lykke.Common.ExchangeAdapter
 {
     public sealed class EpochNonce : IDisposable
     {
-        private static readonly ConcurrentDictionary<string, EpochNonce> Pool = new ConcurrentDictionary<string, EpochNonce>();
+        private static readonly ConcurrentDictionary<string, EpochNonce> Pool =
+            new ConcurrentDictionary<string, EpochNonce>(StringComparer.InvariantCultureIgnoreCase);
 
         public static Task<T> Lock<T>(
             string userId,
