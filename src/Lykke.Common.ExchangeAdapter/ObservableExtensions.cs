@@ -42,14 +42,14 @@ namespace Lykke.Common.ExchangeAdapter
 
             while (true)
             {
-                var delayed =  delay == null? source : source.DelaySubscription(delay.Value);
+                var delayed = delay == null ? source : source.DelaySubscription(delay.Value);
 
                 var result = delayed.Do(_ => { delay = null; }, err =>
                 {
                     if (delay == null) delay = min;
                     else
                     {
-                        var nextMs = delay.Value.Milliseconds * 2;
+                        var nextMs = delay.Value.TotalMilliseconds * 2;
                         delay = TimeSpan.FromMilliseconds(Math.Min(nextMs, max.TotalMilliseconds));
                     }
                 });
@@ -60,6 +60,7 @@ namespace Lykke.Common.ExchangeAdapter
                     .Where(x => x.Item1)
                     .Select(x => x.Item2);
             }
+
             // ReSharper disable once IteratorNeverReturns
         }
 
