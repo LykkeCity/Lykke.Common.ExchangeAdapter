@@ -12,6 +12,11 @@ namespace Lykke.Common.ExchangeAdapter
             return (long) (dt - BaseDateTime).TotalSeconds;
         }
 
+        public static long EpochMilliseconds(this DateTime dt)
+        {
+            return (long) (dt - BaseDateTime).TotalMilliseconds;
+        }
+
         public static DateTime FromEpoch(this long timestamp)
         {
             return BaseDateTime.AddSeconds(timestamp);
