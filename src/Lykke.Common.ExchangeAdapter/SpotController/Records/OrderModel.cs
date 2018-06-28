@@ -7,6 +7,8 @@ namespace Lykke.Common.ExchangeAdapter.SpotController.Records
 {
     public class OrderModel
     {
+        private string _symbol;
+
         /// <summary>
         /// OrderId
         /// </summary>
@@ -17,7 +19,11 @@ namespace Lykke.Common.ExchangeAdapter.SpotController.Records
         /// The instrument (pair) name the order belongs to
         /// </summary>
         [JsonProperty("instrument")]
-        public string Symbol { get; set; }
+        public string Symbol
+        {
+            get => _symbol;
+            set => _symbol = value?.ToUpperInvariant();
+        }
 
         /// <summary>
         /// The price the order was issued at

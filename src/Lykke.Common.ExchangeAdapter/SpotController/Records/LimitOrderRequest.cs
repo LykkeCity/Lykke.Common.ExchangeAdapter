@@ -8,12 +8,18 @@ namespace Lykke.Common.ExchangeAdapter.SpotController.Records
 {
     public class LimitOrderRequest
     {
+        private string _instrument;
+
         /// <summary>
         /// name of instrument (asset pair)
         /// </summary>
         [JsonProperty("instrument")]
         [Required]
-        public string Instrument { get; set; }
+        public string Instrument
+        {
+            get => _instrument;
+            set => _instrument = value?.ToUpperInvariant();
+        }
 
         /// <summary>
         /// price of order

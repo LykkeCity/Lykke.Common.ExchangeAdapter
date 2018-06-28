@@ -4,8 +4,14 @@ namespace Lykke.Common.ExchangeAdapter.SpotController.Records
 {
     public class WalletBalanceModel
     {
+        private string _asset;
+
         [JsonProperty("asset")]
-        public string Asset { get; set; }
+        public string Asset
+        {
+            get => _asset;
+            set => _asset = value?.ToUpperInvariant();
+        }
 
         [JsonProperty("balance")]
         public decimal Balance { get; set; }
