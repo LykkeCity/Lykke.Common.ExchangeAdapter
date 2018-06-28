@@ -7,6 +7,8 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
 {
     public class TickPrice
     {
+        private string _asset;
+
         private bool Equals(TickPrice other)
         {
             return string.Equals(Source, other.Source)
@@ -38,7 +40,11 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
         public string Source { get; set; }
 
         [JsonProperty("asset")]
-        public string Asset { get; set; }
+        public string Asset
+        {
+            get => _asset;
+            set => _asset = value?.ToUpperInvariant();
+        }
 
         [JsonProperty("timestamp")]
         [JsonConverter(typeof(IsoDateTimeConverter))]

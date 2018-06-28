@@ -49,6 +49,7 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
 
         private readonly IDictionary<decimal, OrderBookItem> _asks = new Dictionary<decimal, OrderBookItem>();
         private readonly IDictionary<decimal, OrderBookItem> _bids = new Dictionary<decimal, OrderBookItem>();
+        private string _asset;
 
         public OrderBook()
         {
@@ -74,7 +75,11 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
         public string Source { get; set; }
 
         [JsonProperty("asset")]
-        public string Asset { get; set; }
+        public string Asset
+        {
+            get => _asset;
+            set => _asset = value?.ToUpperInvariant();
+        }
 
         [JsonProperty("timestamp")]
         [JsonConverter(typeof(IsoDateTimeConverter))]
