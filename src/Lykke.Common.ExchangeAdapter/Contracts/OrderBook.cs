@@ -47,8 +47,8 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
             }
         }
 
-        private readonly IDictionary<decimal, OrderBookItem> _asks = new Dictionary<decimal, OrderBookItem>();
-        private readonly IDictionary<decimal, OrderBookItem> _bids = new Dictionary<decimal, OrderBookItem>();
+        private IDictionary<decimal, OrderBookItem> _asks = new Dictionary<decimal, OrderBookItem>();
+        private IDictionary<decimal, OrderBookItem> _bids = new Dictionary<decimal, OrderBookItem>();
         private string _asset;
 
         public OrderBook()
@@ -65,10 +65,10 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
             Source = source;
             Asset = asset;
             Timestamp = timestamp;
-            _asks = asks.GroupBy(x => x.Price).ToDictionary(x => x.Key,
-                x => new OrderBookItem(x.Key, x.Sum(c => c.Volume)));
-            _bids = bids.GroupBy(x => x.Price).ToDictionary(x => x.Key,
-                x => new OrderBookItem(x.Key, x.Sum(c => c.Volume)));
+
+            Asks = asks.ToArray();
+
+            Bids = bids.ToArray();
         }
 
         [JsonProperty("source")]
@@ -86,10 +86,26 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
         public DateTime Timestamp { get; set; }
 
         [JsonProperty("asks")]
-        public IEnumerable<OrderBookItem> Asks => _asks.Values.OrderBy(x => x.Price);
+        public IEnumerable<OrderBookItem> Asks
+        {
+            get { return _asks.Values.OrderBy(x => x.Price).ToArray(); }
+            set
+            {
+                _asks = value.GroupBy(x => x.Price).ToDictionary(x => x.Key,
+                    x => new OrderBookItem(x.Key, x.Sum(c => c.Volume)));
+            }
+        }
 
         [JsonProperty("bids")]
-        public IEnumerable<OrderBookItem> Bids => _bids.Values.OrderByDescending(x => x.Price);
+        public IEnumerable<OrderBookItem> Bids
+        {
+            get { return _bids.Values.OrderByDescending(x => x.Price).ToArray(); }
+            set
+            {
+                _bids = value.GroupBy(x => x.Price).ToDictionary(x => x.Key,
+                    x => new OrderBookItem(x.Key, x.Sum(c => c.Volume)));
+            }
+        }
 
         public OrderBook Clone(DateTime timestamp)
         {
