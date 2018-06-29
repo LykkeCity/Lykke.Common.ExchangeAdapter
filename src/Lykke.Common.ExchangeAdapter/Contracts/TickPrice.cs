@@ -63,8 +63,8 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
                 Source = orderBook.Source,
                 Asset = orderBook.Asset,
                 Timestamp = orderBook.Timestamp,
-                Ask = orderBook.Asks.Min(x => x.Price),
-                Bid = orderBook.Bids.Max(x => x.Price)
+                Ask = orderBook.Asks.Any()? orderBook.Asks.Min(x => x.Price) : 0M,
+                Bid = orderBook.Bids.Any()? orderBook.Bids.Max(x => x.Price) : 0M
             };
         }
     }
