@@ -58,7 +58,7 @@ namespace Lykke.Common.ExchangeAdapter.Tests
             ob.UpdateAsk(3, 1);
             ob.UpdateAsk(2, 1);
 
-            var askPrices = ob.Asks.Select(x => x.Price).ToArray();
+            var askPrices = ob.Asks.Keys.ToArray();
 
             Assert.AreEqual(3, askPrices.Length);
             Assert.AreEqual(new[] {1M, 2M, 3M}, askPrices);
@@ -72,7 +72,7 @@ namespace Lykke.Common.ExchangeAdapter.Tests
             ob.UpdateBid(3, 1);
             ob.UpdateBid(2, 1);
 
-            var bidsPrices = ob.Bids.Select(x => x.Price).ToArray();
+            var bidsPrices = ob.Bids.Keys.ToArray();
 
             Assert.AreEqual(3, bidsPrices.Length);
             Assert.AreEqual(new[] {3M, 2M, 1M}, bidsPrices);

@@ -1,13 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
 
 namespace Lykke.Common.ExchangeAdapter.Contracts
 {
     public sealed class OrderBook
     {
+        private class DescendingComparer<T> : IComparer<T> where T : IComparable<T>
+        {
+            public int Compare(T x, T y)
+            {
+                if (y == null) return -1;
+                return y.CompareTo(x);
+            }
+        }
+
         private static bool CompareDictionaries<TK, TV>(
             IDictionary<TK, TV> first,
             IDictionary<TK, TV> second)
@@ -20,9 +31,9 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
 
         private bool Equals(OrderBook other)
         {
-            var asksEqual = CompareDictionaries(_asks, other._asks);
+            var asksEqual = CompareDictionaries(Asks, other.Asks);
 
-            var bidsEqual = CompareDictionaries(_bids, other._bids);
+            var bidsEqual = CompareDictionaries(Bids, other.Bids);
 
             return asksEqual && bidsEqual && string.Equals(Source, other.Source)
                    && string.Equals(Asset, other.Asset);
@@ -39,20 +50,53 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
         {
             unchecked
             {
-                var hashCode = (_asks != null ? _asks.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (_bids != null ? _bids.GetHashCode() : 0);
+                var hashCode = (Asks != null ? Asks.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Bids != null ?  Bids.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (Source != null ? Source.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (Asset != null ? Asset.GetHashCode() : 0);
                 return hashCode;
             }
         }
 
-        private IDictionary<decimal, OrderBookItem> _asks = new Dictionary<decimal, OrderBookItem>();
-        private IDictionary<decimal, OrderBookItem> _bids = new Dictionary<decimal, OrderBookItem>();
         private string _asset;
+        private ImmutableSortedDictionary<decimal, decimal> _asks
+            = ImmutableSortedDictionary<decimal, decimal>.Empty;
+        private ImmutableSortedDictionary<decimal, decimal> _bids
+            = ImmutableSortedDictionary.Create<decimal, decimal>(DescComparer);
 
         public OrderBook()
         {
+        }
+
+        public decimal BestAskPrice => Asks.Keys.FirstOrDefault();
+        public decimal BestBidPrice => Bids.Keys.FirstOrDefault();
+
+        private  static readonly DescendingComparer<decimal> DescComparer = new DescendingComparer<decimal>();
+
+        private OrderBook(string source,
+            string asset,
+            DateTime timestamp,
+            ImmutableSortedDictionary<decimal, decimal> asks,
+            ImmutableSortedDictionary<decimal, decimal> bids)
+        {
+            Source = source;
+            Timestamp = timestamp;
+            Asset = asset;
+            Asks = asks;
+            Bids = bids;
+        }
+
+        private OrderBook(string source,
+            string asset,
+            DateTime timestamp,
+            IEnumerable<KeyValuePair<decimal, decimal>> asks,
+            IEnumerable<KeyValuePair<decimal, decimal>> bids)
+        {
+            Source = source;
+            Timestamp = timestamp;
+            Asset = asset;
+            Asks = ImmutableSortedDictionary.CreateRange(asks);
+            Bids = ImmutableSortedDictionary.CreateRange(DescComparer, bids);
         }
 
         public OrderBook(
@@ -66,9 +110,16 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
             Asset = asset;
             Timestamp = timestamp;
 
-            Asks = asks.ToArray();
+            Asks = ImmutableSortedDictionary.CreateRange(
+                asks.Where(x => x.Price != 0M)
+                    .GroupBy(x => x.Price)
+                    .ToDictionary(x => x.Key, x => x.Sum(i => i.Volume)));
 
-            Bids = bids.ToArray();
+            Bids = ImmutableSortedDictionary.CreateRange(
+                DescComparer,
+                bids.Where(x => x.Price != 0M)
+                    .GroupBy(x => x.Price)
+                    .ToDictionary(x => x.Key, x => x.Sum(i => i.Volume)));
         }
 
         [JsonProperty("source")]
@@ -85,26 +136,19 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
         [JsonConverter(typeof(IsoDateTimeConverter))]
         public DateTime Timestamp { get; set; }
 
-        [JsonProperty("asks")]
-        public IEnumerable<OrderBookItem> Asks
+        [JsonProperty("asks"), JsonConverter(typeof(OrderBookItemsConverter))]
+        public ImmutableSortedDictionary<decimal, decimal> Asks
         {
-            get { return _asks.Values.OrderBy(x => x.Price).ToArray(); }
-            set
-            {
-                _asks = value.GroupBy(x => x.Price).ToDictionary(x => x.Key,
-                    x => new OrderBookItem(x.Key, x.Sum(c => c.Volume)));
-            }
+            get => _asks;
+            set => _asks = value;
         }
 
-        [JsonProperty("bids")]
-        public IEnumerable<OrderBookItem> Bids
+
+        [JsonProperty("bids"), JsonConverter(typeof(OrderBookItemsConverter))]
+        public ImmutableSortedDictionary<decimal, decimal> Bids
         {
-            get { return _bids.Values.OrderByDescending(x => x.Price).ToArray(); }
-            set
-            {
-                _bids = value.GroupBy(x => x.Price).ToDictionary(x => x.Key,
-                    x => new OrderBookItem(x.Key, x.Sum(c => c.Volume)));
-            }
+            get => _bids;
+            set => _bids = value;
         }
 
         public OrderBook Clone(DateTime timestamp)
@@ -113,30 +157,93 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
                 Source,
                 Asset,
                 timestamp,
-                Asks.ToArray(),
-                Bids.ToArray());
+                Asks,
+                Bids);
+        }
+
+        public OrderBook Truncate(int depth)
+        {
+            return new OrderBook(
+                Source,
+                Asset,
+                Timestamp,
+                Asks.Take(depth),
+                Bids.Take(depth));
         }
 
         public void UpdateAsk(decimal price, decimal volume)
         {
-            UpdateOrderBook(_asks, price, volume);
+            UpdateOrderBook(ref _asks, price, volume);
         }
 
-        private static void UpdateOrderBook(IDictionary<decimal, OrderBookItem> c, decimal price, decimal volume)
+        private static void UpdateOrderBook(
+            ref ImmutableSortedDictionary<decimal, decimal> c, decimal price, decimal volume)
         {
-            if (volume == 0)
-            {
-                c.Remove(price);
-            }
-            else
-            {
-                c[price] = new OrderBookItem(price, volume);
-            }
+            c = volume == 0 ? c.Remove(price) : c.SetItem(price, volume);
         }
 
         public void UpdateBid(decimal price, decimal volume)
         {
-            UpdateOrderBook(_bids, price, volume);
+            UpdateOrderBook(ref _bids, price, volume);
+        }
+    }
+
+    public sealed class OrderBookItemsConverter : JsonConverter<ImmutableSortedDictionary<decimal, decimal>>
+    {
+        public override void WriteJson(
+            JsonWriter writer,
+            ImmutableSortedDictionary<decimal, decimal> value,
+            JsonSerializer serializer)
+        {
+            writer.WriteStartArray();
+
+            foreach (var item in value)
+            {
+                writer.WriteStartObject();
+
+                writer.WritePropertyName("price");
+                writer.WriteRawValue(JsonConvert.ToString(item.Key));
+
+                writer.WritePropertyName("volume");
+                writer.WriteRawValue(JsonConvert.ToString(item.Value));
+
+                writer.WriteEndObject();
+            }
+
+            writer.WriteEndArray();
+        }
+
+        public override ImmutableSortedDictionary<decimal, decimal> ReadJson(
+            JsonReader reader,
+            Type objectType,
+            ImmutableSortedDictionary<decimal, decimal> existingValue,
+            bool hasExistingValue,
+            JsonSerializer serializer)
+        {
+            if (!hasExistingValue)
+            {
+                throw new JsonSerializationException("Expected non empty ImmutableSortedDictionary instance");
+            }
+
+            return ImmutableSortedDictionary.CreateRange(existingValue.KeyComparer, ReadJsonObject(reader));
+        }
+
+        private static IEnumerable<KeyValuePair<decimal, decimal>> ReadJsonObject(JsonReader reader)
+        {
+            if (reader.TokenType == JsonToken.StartArray)
+            {
+                if (reader.Read())
+                {
+                    while (reader.TokenType != JsonToken.EndArray)
+                    {
+                        var obj = JObject.Load(reader);
+                        yield return new KeyValuePair<decimal, decimal>(
+                            obj["price"].Value<decimal>(),
+                            obj["volume"].Value<decimal>());
+                        if (!reader.Read()) break;
+                    }
+                }
+            }
         }
     }
 }

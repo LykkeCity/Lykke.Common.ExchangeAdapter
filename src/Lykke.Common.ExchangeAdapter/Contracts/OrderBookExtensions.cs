@@ -8,11 +8,11 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
         {
             if (orderBook.Asks.Any() && orderBook.Bids.Any())
             {
-                var bestAsk = orderBook.Asks.Min(ob => ob.Price);
-                var bestBid = orderBook.Bids.Max(ob => ob.Price);
+                var bestAsk = orderBook.BestAskPrice;
+                var bestBid = orderBook.BestBidPrice;
                 if (bestAsk < bestBid)
                 {
-                    error = $"Orderbook for asset {orderBook.Asset} has negative spread, " +
+                    error = $"OrderBook for asset {orderBook.Asset} has negative spread, " +
                             $"minAsk: {bestAsk}, " +
                             $"maxBid: {bestBid}," +
                             $"spread: {bestAsk - bestBid}";

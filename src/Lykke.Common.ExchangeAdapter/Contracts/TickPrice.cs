@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
@@ -20,7 +19,7 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((TickPrice) obj);
         }
 
@@ -63,8 +62,8 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
                 Source = orderBook.Source,
                 Asset = orderBook.Asset,
                 Timestamp = orderBook.Timestamp,
-                Ask = orderBook.Asks.Any()? orderBook.Asks.Min(x => x.Price) : 0M,
-                Bid = orderBook.Bids.Any()? orderBook.Bids.Max(x => x.Price) : 0M
+                Ask = orderBook.BestAskPrice,
+                Bid = orderBook.BestBidPrice
             };
         }
     }
