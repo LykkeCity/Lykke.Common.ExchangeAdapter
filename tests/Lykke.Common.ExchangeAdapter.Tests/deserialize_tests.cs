@@ -63,8 +63,8 @@ namespace Lykke.Common.ExchangeAdapter.Tests
                 bids: new[] {3, 1, 2}.Select(x => new OrderBookItem(x, 5))
             );
 
-            Assert.AreEqual(new[] {4M, 5M, 6M}, ob.Asks.Keys);
-            Assert.AreEqual(new[] {3M, 2M, 1M}, ob.Bids.Keys);
+            Assert.AreEqual(new[] {4M, 5M, 6M}, ob.AskLevels.Keys);
+            Assert.AreEqual(new[] {3M, 2M, 1M}, ob.BidLevels.Keys);
         }
 
         [Test]

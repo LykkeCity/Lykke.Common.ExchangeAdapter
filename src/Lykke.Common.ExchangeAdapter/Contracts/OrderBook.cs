@@ -31,9 +31,9 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
 
         private bool Equals(OrderBook other)
         {
-            var asksEqual = CompareDictionaries(Asks, other.Asks);
+            var asksEqual = CompareDictionaries(AskLevels, other.AskLevels);
 
-            var bidsEqual = CompareDictionaries(Bids, other.Bids);
+            var bidsEqual = CompareDictionaries(BidLevels, other.BidLevels);
 
             return asksEqual && bidsEqual && string.Equals(Source, other.Source)
                    && string.Equals(Asset, other.Asset);
@@ -50,8 +50,8 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
         {
             unchecked
             {
-                var hashCode = (Asks != null ? Asks.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (Bids != null ?  Bids.GetHashCode() : 0);
+                var hashCode = (AskLevels != null ? AskLevels.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (BidLevels != null ?  BidLevels.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (Source != null ? Source.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (Asset != null ? Asset.GetHashCode() : 0);
                 return hashCode;
@@ -69,9 +69,9 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
         }
 
         [JsonIgnore]
-        public decimal BestAskPrice => Asks.Keys.FirstOrDefault();
+        public decimal BestAskPrice => AskLevels.Keys.FirstOrDefault();
         [JsonIgnore]
-        public decimal BestBidPrice => Bids.Keys.FirstOrDefault();
+        public decimal BestBidPrice => BidLevels.Keys.FirstOrDefault();
 
         private  static readonly DescendingComparer<decimal> DescComparer = new DescendingComparer<decimal>();
 
@@ -84,8 +84,8 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
             Source = source;
             Timestamp = timestamp;
             Asset = asset;
-            Asks = asks;
-            Bids = bids;
+            AskLevels = asks;
+            BidLevels = bids;
         }
 
         private OrderBook(string source,
@@ -97,8 +97,8 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
             Source = source;
             Timestamp = timestamp;
             Asset = asset;
-            Asks = ImmutableSortedDictionary.CreateRange(asks);
-            Bids = ImmutableSortedDictionary.CreateRange(DescComparer, bids);
+            AskLevels = ImmutableSortedDictionary.CreateRange(asks);
+            BidLevels = ImmutableSortedDictionary.CreateRange(DescComparer, bids);
         }
 
         public OrderBook(
@@ -112,12 +112,12 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
             Asset = asset;
             Timestamp = timestamp;
 
-            Asks = ImmutableSortedDictionary.CreateRange(
+            AskLevels = ImmutableSortedDictionary.CreateRange(
                 asks.Where(x => x.Price != 0M)
                     .GroupBy(x => x.Price)
                     .ToDictionary(x => x.Key, x => x.Sum(i => i.Volume)));
 
-            Bids = ImmutableSortedDictionary.CreateRange(
+            BidLevels = ImmutableSortedDictionary.CreateRange(
                 DescComparer,
                 bids.Where(x => x.Price != 0M)
                     .GroupBy(x => x.Price)
@@ -139,15 +139,19 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
         public DateTime Timestamp { get; set; }
 
         [JsonProperty("asks"), JsonConverter(typeof(OrderBookItemsConverter))]
-        public ImmutableSortedDictionary<decimal, decimal> Asks
+        public ImmutableSortedDictionary<decimal, decimal> AskLevels
         {
             get => _asks;
             set => _asks = value;
         }
 
+        [JsonIgnore]
+        public IEnumerable<OrderBookItem> Asks => AskLevels.Select(kv => new OrderBookItem(kv.Key, kv.Value));
+        [JsonIgnore]
+        public IEnumerable<OrderBookItem> Bids => BidLevels.Select(kv => new OrderBookItem(kv.Key, kv.Value));
 
         [JsonProperty("bids"), JsonConverter(typeof(OrderBookItemsConverter))]
-        public ImmutableSortedDictionary<decimal, decimal> Bids
+        public ImmutableSortedDictionary<decimal, decimal> BidLevels
         {
             get => _bids;
             set => _bids = value;
@@ -159,8 +163,8 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
                 Source,
                 Asset,
                 timestamp,
-                Asks,
-                Bids);
+                AskLevels,
+                BidLevels);
         }
 
         public OrderBook Truncate(int depth)
@@ -169,8 +173,8 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
                 Source,
                 Asset,
                 Timestamp,
-                Asks.Take(depth),
-                Bids.Take(depth));
+                AskLevels.Take(depth),
+                BidLevels.Take(depth));
         }
 
         public void UpdateAsk(decimal price, decimal volume)

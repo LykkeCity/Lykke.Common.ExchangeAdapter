@@ -6,7 +6,7 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
     {
         public static bool TryDetectNegativeSpread(this OrderBook orderBook, out string error)
         {
-            if (orderBook.Asks.Any() && orderBook.Bids.Any())
+            if (orderBook.AskLevels.Any() && orderBook.BidLevels.Any())
             {
                 var bestAsk = orderBook.BestAskPrice;
                 var bestBid = orderBook.BestBidPrice;
