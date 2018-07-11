@@ -68,7 +68,9 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
         {
         }
 
+        [JsonIgnore]
         public decimal BestAskPrice => Asks.Keys.FirstOrDefault();
+        [JsonIgnore]
         public decimal BestBidPrice => Bids.Keys.FirstOrDefault();
 
         private  static readonly DescendingComparer<decimal> DescComparer = new DescendingComparer<decimal>();
