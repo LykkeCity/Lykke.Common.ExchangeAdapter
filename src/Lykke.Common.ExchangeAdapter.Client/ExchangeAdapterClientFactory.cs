@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Lykke.Common.ExchangeAdapter.SpotController;
+using Lykke.Common.ExchangeAdapter.SpotController.Records;
 using Lykke.HttpClientGenerator;
 
 namespace Lykke.Common.ExchangeAdapter.Client
@@ -10,7 +12,10 @@ namespace Lykke.Common.ExchangeAdapter.Client
     {
         private readonly IReadOnlyDictionary<string, AdapterEndpoint> _adapters;
 
-        private static readonly ConcurrentDictionary<string, ISpotController> Instances
+        private static readonly ConcurrentDictionary<string, ISpotController> SpotControllers
+            = new ConcurrentDictionary<string, ISpotController>();
+
+        private static readonly ConcurrentDictionary<string, IOrder> OrderBookControllers
             = new ConcurrentDictionary<string, ISpotController>();
 
         public ExchangeAdapterClientFactory(
@@ -19,9 +24,11 @@ namespace Lykke.Common.ExchangeAdapter.Client
             _adapters = adapters;
         }
 
-        public ISpotController this[string adapter] => Instances.GetOrAdd(adapter, CreateNewClient);
+        [Obsolete("Use explicit method for get a client")]
+        public ISpotController this[string adapter] =>
+            SpotControllers.GetOrAdd(adapter, CreateNewClient<ISpotController>);
 
-        private ISpotController CreateNewClient(string adapter)
+        private T CreateNewClient<T>(string adapter)
         {
             if (!_adapters.TryGetValue(adapter, out var endpoint))
             {
@@ -34,7 +41,12 @@ namespace Lykke.Common.ExchangeAdapter.Client
                  .Create();
 
 
-             return builder.Generate<ISpotController>();
+             return builder.Generate<T>();
+        }
+
+        public ISpotController GetSpotController(string adapter)
+        {
+            return SpotControllers.GetOrAdd(adapter, CreateNewClient<ISpotController>);
         }
     }
 }
