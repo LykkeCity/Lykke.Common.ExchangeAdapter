@@ -15,8 +15,8 @@ namespace Lykke.Common.ExchangeAdapter.Client
         private static readonly ConcurrentDictionary<string, ISpotController> SpotControllers
             = new ConcurrentDictionary<string, ISpotController>();
 
-        private static readonly ConcurrentDictionary<string, IOrder> OrderBookControllers
-            = new ConcurrentDictionary<string, ISpotController>();
+        private static readonly ConcurrentDictionary<string, IOrderBookController> OrderBookControllers
+            = new ConcurrentDictionary<string, IOrderBookController>();
 
         public ExchangeAdapterClientFactory(
             IReadOnlyDictionary<string, AdapterEndpoint> adapters)
@@ -24,7 +24,7 @@ namespace Lykke.Common.ExchangeAdapter.Client
             _adapters = adapters;
         }
 
-        [Obsolete("Use explicit method for get a client")]
+        [Obsolete("Use explicit method to get a client GetSpotController/GetOrderBookController")]
         public ISpotController this[string adapter] =>
             SpotControllers.GetOrAdd(adapter, CreateNewClient<ISpotController>);
 
@@ -40,13 +40,17 @@ namespace Lykke.Common.ExchangeAdapter.Client
                  .WithoutRetries()
                  .Create();
 
-
              return builder.Generate<T>();
         }
 
         public ISpotController GetSpotController(string adapter)
         {
             return SpotControllers.GetOrAdd(adapter, CreateNewClient<ISpotController>);
+        }
+
+        public IOrderBookController GetOrderBookController(string adapter)
+        {
+            return OrderBookControllers.GetOrAdd(adapter, CreateNewClient<IOrderBookController>);
         }
     }
 }
