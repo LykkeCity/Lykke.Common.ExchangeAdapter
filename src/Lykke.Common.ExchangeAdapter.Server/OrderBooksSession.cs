@@ -61,6 +61,7 @@ namespace Lykke.Common.ExchangeAdapter.Server
 
         public IObservable<OrderBook> GetOrderBook(string asset)
         {
+            if (asset == null) return Observable.Empty<OrderBook>();
             if (_byAsset.TryGetValue(asset, out var orderBooks)) return orderBooks;
             return Observable.Empty<OrderBook>();
         }
