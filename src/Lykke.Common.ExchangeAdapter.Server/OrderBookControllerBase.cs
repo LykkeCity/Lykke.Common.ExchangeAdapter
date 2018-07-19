@@ -9,6 +9,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Lykke.Common.ExchangeAdapter.Server
 {
+    [Route("api/OrderBook")]
     public abstract class OrderBookControllerBase : Controller, IOrderBookController
     {
         protected abstract OrderBooksSession Session { get; }
