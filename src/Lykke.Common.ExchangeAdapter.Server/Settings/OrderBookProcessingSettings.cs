@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Lykke.Common.ExchangeAdapter.Server.Settings
 {
-    public sealed class OrderBookProcessingSettings
+    public class OrderBookProcessingSettings
     {
         public IReadOnlyCollection<string> AllowedAnomalisticAssets { get; set; }
 
