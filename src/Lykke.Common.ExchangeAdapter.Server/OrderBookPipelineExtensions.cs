@@ -5,34 +5,15 @@ using System.Reactive;
 using System.Reactive.Linq;
 using Common.Log;
 using Lykke.Common.ExchangeAdapter.Contracts;
+using Lykke.Common.ExchangeAdapter.Server.Settings;
 using Lykke.Common.Log;
 using Lykke.RabbitMqBroker.Publisher;
 using Lykke.RabbitMqBroker.Subscriber;
-using Lykke.SettingsReader.Attributes;
 
 namespace Lykke.Common.ExchangeAdapter.Server
 {
     public static class OrderBookPipelineExtensions
     {
-        public sealed class RmqOutput
-        {
-            [AmqpCheck]
-            public string ConnectionString { get; set; }
-            public string Exchanger { get; set; }
-            public bool Durable { get; set; }
-            public bool Enabled { get; set; }
-        }
-
-        public sealed class OrderBookProcessingSettings
-        {
-            public IEnumerable<string> AllowedAnomalisticAssets { get; set; }
-
-            public int MaxEventPerSecondByInstrument { get; set; }
-            public int OrderBookDepth { get; set; }
-            public RmqOutput OrderBooks { get; set; }
-            public RmqOutput TickPrices { get; set; }
-        }
-
         public static OrderBooksSession FromRawOrderBooks(
             this IObservable<OrderBook> rawOrderBooks,
             IReadOnlyCollection<string> instruments,
