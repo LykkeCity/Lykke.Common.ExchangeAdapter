@@ -139,6 +139,16 @@ namespace Lykke.Common.ExchangeAdapter.Server
             string exchanger,
             ILogFactory logFactory)
         {
+            return PublishToRmq(source, connectionString, exchanger, logFactory, true);
+        }
+
+        public static IObservable<Unit> PublishToRmq<T>(
+            this IObservable<T> source,
+            string connectionString,
+            string exchanger,
+            ILogFactory logFactory,
+            bool isDurable)
+        {
             const string prefix = "lykke.";
 
             if (exchanger.StartsWith(prefix)) exchanger = exchanger.Substring(prefix.Length);
@@ -147,7 +157,7 @@ namespace Lykke.Common.ExchangeAdapter.Server
                 connectionString,
                 exchanger);
 
-            settings.IsDurable = true;
+            settings.IsDurable = isDurable;
 
             var connection
                 = new RabbitMqPublisher<T>(logFactory, settings)
