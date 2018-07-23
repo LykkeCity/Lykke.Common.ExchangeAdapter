@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Common.Log;
+using Lykke.Common.Log;
 
 namespace Lykke.Common.ExchangeAdapter.Server
 {
@@ -49,7 +50,7 @@ namespace Lykke.Common.ExchangeAdapter.Server
                         Elapsed = sw.Elapsed
                     };
 
-                    _log.WriteInfo(nameof(LoggingHandler), context, request.RequestUri.PathAndQuery);
+                    _log.Info(request.RequestUri.PathAndQuery, context);
                 }
 
                 return result;
@@ -64,7 +65,7 @@ namespace Lykke.Common.ExchangeAdapter.Server
                     Error = ex.Message
                 };
 
-                _log.WriteInfo(nameof(LoggingHandler), context, request.RequestUri.PathAndQuery);
+                _log.Info(request.RequestUri.PathAndQuery, context);
                 throw;
             }
         }

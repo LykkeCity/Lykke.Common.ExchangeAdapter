@@ -12,6 +12,11 @@ using Lykke.RabbitMqBroker.Subscriber;
 
 namespace Lykke.Common.ExchangeAdapter.Server
 {
+    internal class OrderBookPipelines
+    {
+
+    }
+
     public static class OrderBookPipelineExtensions
     {
         public static OrderBooksSession FromRawOrderBooks(
@@ -20,7 +25,7 @@ namespace Lykke.Common.ExchangeAdapter.Server
             OrderBookProcessingSettings settings,
             ILogFactory logFactory)
         {
-            var log = logFactory.CreateLog(rawOrderBooks);
+            var log = logFactory.CreateLog(new OrderBookPipelines());
 
             var statWindow = TimeSpan.FromMinutes(1);
 
@@ -71,13 +76,14 @@ namespace Lykke.Common.ExchangeAdapter.Server
                 orderBooks.ReportStatistics(
                         statWindow,
                         log,
-                        "OrderBooks received from WebSocket in the last {0}: {1}")
+                        "OrderBooks received from source in the last {0} - {1}")
                     .NeverIfNotEnabled(publishTickPrices || publishOrderBooks),
 
-                tpPublisher.ReportStatistics(statWindow, log, "TickPrices published in the last {0}: {1}")
+                tpPublisher
+                    .ReportStatistics(statWindow, log, "TickPrices published in the last {0} - {1}")
                     .NeverIfNotEnabled(publishTickPrices),
 
-                obPublisher.ReportStatistics(statWindow, log, "OrderBooks published in the last {0}: {1}")
+                obPublisher.ReportStatistics(statWindow, log, "OrderBooks published in the last {0} - {1}")
                     .NeverIfNotEnabled(publishOrderBooks)
             );
 
@@ -257,7 +263,7 @@ namespace Lykke.Common.ExchangeAdapter.Server
             this IObservable<T> source,
             TimeSpan window,
             ILog log,
-            string format = "Entities registered in the last {0}: {1}")
+            string format = "Entities registered in the last {0} - {1}")
         {
             return source
                 .WindowCount(window)
