@@ -58,6 +58,7 @@ namespace Lykke.Common.ExchangeAdapter.Server
                     settings.TickPrices.Exchanger,
                     logFactory)
                 .ReportErrors(nameof(FromRawOrderBooks), log)
+                .RetryWithBackoff(TimeSpan.FromSeconds(5), TimeSpan.FromMinutes(5))
                 .Share();
 
             var publishTickPrices = settings.TickPrices.Enabled;

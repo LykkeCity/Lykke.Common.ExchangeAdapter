@@ -7,7 +7,11 @@ namespace Lykke.Common.ExchangeAdapter.Server.Settings
             [AmqpCheck]
             public string ConnectionString { get; set; }
             public string Exchanger { get; set; }
-            public bool Durable { get; set; }
-            public bool Enabled { get; set; }
+
+            [Optional]
+            public bool Durable { get; set; } = true;
+
+            [Optional]
+            public bool Enabled { get; set; } = true;
         }
 }
