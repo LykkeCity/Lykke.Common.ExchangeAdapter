@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,9 +14,13 @@ namespace Lykke.Common.ExchangeAdapter.Server
     {
         private readonly ILog _log;
 
-        public LoggingHandler(ILog log, HttpMessageHandler next) : base(next)
+        public LoggingHandler(
+            ILog log,
+            HttpMessageHandler next,
+            params string[] pathsToIgnore) : base(next)
         {
             _log = log;
+            PathsToIngore = (pathsToIgnore ?? new string[0]).ToHashSet();
         }
 
         protected override async Task<HttpResponseMessage> SendAsync(
@@ -70,12 +75,9 @@ namespace Lykke.Common.ExchangeAdapter.Server
             }
         }
 
-        private static readonly HashSet<string> PathsToIngore = new HashSet<string>
-        {
-            "/v1/open/orders"
-        };
+        private readonly HashSet<string> PathsToIngore;
 
-        private static bool IgnoreSuccess(Uri requestRequestUri)
+        private bool IgnoreSuccess(Uri requestRequestUri)
         {
             if (PathsToIngore.Contains(requestRequestUri.AbsolutePath))
             {
