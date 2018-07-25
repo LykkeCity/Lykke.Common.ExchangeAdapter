@@ -4,7 +4,7 @@
     <Version>1.0.1</Version>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Lykke.Common.ExchangeAdapter" Version="3.3.0" />
+    <PackageReference Include="Lykke.Common.ExchangeAdapter" Version="3.3.2" />
     <PackageReference Include="Lykke.RabbitMqBroker" Version="7.1.0" />
     <PackageReference Include="Lykke.Sdk" Version="4.1.1" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.1.1" />
