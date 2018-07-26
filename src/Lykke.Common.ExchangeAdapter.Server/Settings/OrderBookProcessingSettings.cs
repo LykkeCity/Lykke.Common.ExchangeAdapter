@@ -6,7 +6,7 @@ namespace Lykke.Common.ExchangeAdapter.Server.Settings
     {
         public IReadOnlyCollection<string> AllowedAnomalisticAssets { get; set; }
 
-        public int MaxEventPerSecondByInstrument { get; set; }
+        public float MaxEventPerSecondByInstrument { get; set; }
         public int OrderBookDepth { get; set; }
         public RmqOutput OrderBooks { get; set; }
         public RmqOutput TickPrices { get; set; }
