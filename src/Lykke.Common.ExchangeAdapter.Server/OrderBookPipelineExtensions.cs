@@ -61,7 +61,8 @@ namespace Lykke.Common.ExchangeAdapter.Server
                 .PublishToRmq(
                     settings.TickPrices.ConnectionString,
                     settings.TickPrices.Exchanger,
-                    logFactory)
+                    logFactory,
+                    settings.TickPrices.Durable)
                 .ReportErrors(nameof(FromRawOrderBooks), log)
                 .RetryWithBackoff(TimeSpan.FromSeconds(5), TimeSpan.FromMinutes(5))
                 .Share();
