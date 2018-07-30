@@ -6,6 +6,8 @@ using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Lykke.Common.ExchangeAdapter.Contracts;
+using Lykke.Common.ExchangeAdapter.Server.Settings;
+using Lykke.Common.Log;
 
 namespace Lykke.Common.ExchangeAdapter.Server
 {
@@ -17,6 +19,7 @@ namespace Lykke.Common.ExchangeAdapter.Server
 
         private readonly ConcurrentDictionary<string, IObservable<OrderBook>> _byAsset =
             new ConcurrentDictionary<string, IObservable<OrderBook>>(StringComparer.InvariantCultureIgnoreCase);
+
         private readonly CompositeDisposable _disposable;
 
         [Obsolete("Instruments parameter is not required")]
@@ -76,6 +79,80 @@ namespace Lykke.Common.ExchangeAdapter.Server
         public void Dispose()
         {
             _disposable?.Dispose();
+        }
+
+        public static OrderBooksSession FromRawOrderBooks(
+            IObservable<OrderBook> rawOrderBooks,
+            OrderBookProcessingSettings settings,
+            ILogFactory logFactory)
+        {
+            var log = logFactory.CreateLog(new OrderBookPipelines());
+
+            var statWindow = TimeSpan.FromMinutes(1);
+
+            var orderBooks = rawOrderBooks
+                .OnlyWithPositiveSpread()
+                .DetectAndFilterAnomalies(log, settings.AllowedAnomalisticAssets ?? new string[0])
+                .ReportErrors(nameof(FromRawOrderBooks), log)
+                .RetryWithBackoff(TimeSpan.FromSeconds(5), TimeSpan.FromMinutes(5))
+                .Share();
+
+            var tickPrices = orderBooks
+                .Select(TickPrice.FromOrderBook)
+                .DistinctEveryInstrument(x => x.Asset)
+                .ReportErrors(nameof(FromRawOrderBooks), log)
+                .RetryWithBackoff(TimeSpan.FromSeconds(5), TimeSpan.FromMinutes(5))
+                .Share();
+
+            var obPublisher =
+                orderBooks
+                    .ThrottleEachInstrument(x => x.Asset, settings.MaxEventPerSecondByInstrument)
+                    .Select(x => x.Truncate(settings.OrderBookDepth))
+                    .PublishToRmq(
+                        settings.OrderBooks.ConnectionString,
+                        settings.OrderBooks.Exchanger,
+                        logFactory,
+                        settings.OrderBooks.Durable)
+                    .ReportErrors(nameof(FromRawOrderBooks), log)
+                    .RetryWithBackoff(TimeSpan.FromSeconds(5), TimeSpan.FromMinutes(5))
+                    .Share();
+
+            var tpPublisher = tickPrices
+                .ThrottleEachInstrument(x => x.Asset, settings.MaxEventPerSecondByInstrument)
+                .PublishToRmq(
+                    settings.TickPrices.ConnectionString,
+                    settings.TickPrices.Exchanger,
+                    logFactory,
+                    settings.TickPrices.Durable)
+                .ReportErrors(nameof(FromRawOrderBooks), log)
+                .RetryWithBackoff(TimeSpan.FromSeconds(5), TimeSpan.FromMinutes(5))
+                .Share();
+
+            var publishTickPrices = settings.TickPrices.Enabled;
+            var publishOrderBooks = settings.OrderBooks.Enabled;
+
+            var publisher = Observable.Merge(
+                tpPublisher.NeverIfNotEnabled(publishTickPrices),
+                obPublisher.NeverIfNotEnabled(publishOrderBooks),
+
+                orderBooks.ReportStatistics(
+                        statWindow,
+                        log,
+                        "OrderBooks received from source in the last {0} - {1}")
+                    .NeverIfNotEnabled(publishTickPrices || publishOrderBooks),
+
+                tpPublisher
+                    .ReportStatistics(statWindow, log, "TickPrices published in the last {0} - {1}")
+                    .NeverIfNotEnabled(publishTickPrices),
+
+                obPublisher.ReportStatistics(statWindow, log, "OrderBooks published in the last {0} - {1}")
+                    .NeverIfNotEnabled(publishOrderBooks)
+            );
+
+            return new OrderBooksSession(
+                tickPrices,
+                orderBooks,
+                publisher);
         }
     }
 }
