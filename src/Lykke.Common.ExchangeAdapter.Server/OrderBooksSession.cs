@@ -39,7 +39,15 @@ namespace Lykke.Common.ExchangeAdapter.Server
 
             var groupOrderBooks = orderBooks
                 .GroupBy(x => x.Asset)
-                .Subscribe(x => _byAsset.TryAdd(x.Key, x.ShareLatest()));
+                .Subscribe(x =>
+                {
+                    var subscription = x.ShareLatest();
+
+                    if (_byAsset.TryAdd(x.Key, subscription))
+                    {
+                        _disposable.Add(subscription.Subscribe());
+                    }
+                });
 
             _disposable = new CompositeDisposable(
                 groupOrderBooks,
