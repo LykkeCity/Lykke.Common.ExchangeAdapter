@@ -11,40 +11,39 @@ namespace Lykke.Common.ExchangeAdapter.Server
 {
     public sealed class OrderBooksSession : IDisposable
     {
-        public readonly IReadOnlyCollection<string> Instruments;
+        public IReadOnlyCollection<string> Instruments => _byAsset.Keys.ToArray();
         public readonly IObservable<ICollection<TickPrice>> TickPrices;
         public readonly IObservable<Unit> Worker;
 
-        private readonly Dictionary<string, IObservable<OrderBook>> _byAsset;
+        private readonly ConcurrentDictionary<string, IObservable<OrderBook>> _byAsset =
+            new ConcurrentDictionary<string, IObservable<OrderBook>>(StringComparer.InvariantCultureIgnoreCase);
         private readonly CompositeDisposable _disposable;
 
+        [Obsolete("Instruments parameter is not required")]
         public OrderBooksSession(
-            IReadOnlyCollection<string> instruments,
+            IEnumerable<string> instruments,
+            IObservable<TickPrice> tickPrices,
+            IObservable<OrderBook> orderBooks,
+            IObservable<Unit> worker)
+            : this(tickPrices, orderBooks, worker)
+        {
+        }
+
+        public OrderBooksSession(
             IObservable<TickPrice> tickPrices,
             IObservable<OrderBook> orderBooks,
             IObservable<Unit> worker)
         {
-            Instruments = instruments;
             TickPrices = CombineTickPrices(tickPrices).ShareLatest();
             Worker = worker;
 
-            _byAsset = new Dictionary<string, IObservable<OrderBook>>(
-                StringComparer.InvariantCultureIgnoreCase);
-
-            foreach (var i in instruments)
-            {
-                var shareLatest = orderBooks.Where(x =>
-                        string.Equals(x.Asset, i, StringComparison.InvariantCultureIgnoreCase))
-                    .StartWith((OrderBook) null)
-                    .ShareLatest();
-
-                _byAsset[i] = shareLatest;
-            }
+            var groupOrderBooks = orderBooks
+                .GroupBy(x => x.Asset)
+                .Subscribe(x => _byAsset.TryAdd(x.Key, x.ShareLatest()));
 
             _disposable = new CompositeDisposable(
-                _byAsset.Values
-                    .Select(x => x.Subscribe())
-                    .Concat(new[] {TickPrices.Subscribe()}));
+                groupOrderBooks,
+                TickPrices.Subscribe());
         }
 
         private static IObservable<ICollection<TickPrice>> CombineTickPrices(IObservable<TickPrice> tickPrices)

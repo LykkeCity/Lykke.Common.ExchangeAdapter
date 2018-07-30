@@ -89,7 +89,6 @@ namespace Lykke.Common.ExchangeAdapter.Server
             );
 
             return new OrderBooksSession(
-                instruments,
                 tickPrices,
                 orderBooks,
                 publisher);
