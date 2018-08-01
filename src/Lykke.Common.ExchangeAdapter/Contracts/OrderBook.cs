@@ -231,7 +231,11 @@ namespace Lykke.Common.ExchangeAdapter.Contracts
                 throw new JsonSerializationException("Expected non empty ImmutableSortedDictionary instance");
             }
 
-            return ImmutableSortedDictionary.CreateRange(existingValue.KeyComparer, ReadJsonObject(reader));
+            return ImmutableSortedDictionary.CreateRange(
+                existingValue.KeyComparer,
+                ReadJsonObject(reader).GroupBy(x => x.Key).Select(grouping => KeyValuePair.Create(
+                    grouping.Key,
+                    grouping.Sum(t => t.Value))));
         }
 
         private static IEnumerable<KeyValuePair<decimal, decimal>> ReadJsonObject(JsonReader reader)

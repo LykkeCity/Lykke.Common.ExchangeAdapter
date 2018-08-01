@@ -52,6 +52,20 @@ namespace Lykke.Common.ExchangeAdapter.Tests
         }
 
         [Test]
+        public void deserialization_of_the_same_price_level_should_not_fail()
+        {
+            var serialized =
+                "{\"source\":\"source\",\"asset\":\"ASSET\",\"timestamp\":\"2018-07-05T09:27:45.661257Z\"," +
+                "\"asks\":[{\"price\":100.0  ," +
+                "\"volume\": \"5.0\" \n    },\n{\"price\":100.0  ," +
+                "\"volume\": \"6.0\" \n    }],\"bids\":[{\"price\":80.0,\"volume\":5.0}]}";
+
+            var deserialized = JsonConvert.DeserializeObject<OrderBook>(serialized);
+
+            Assert.AreEqual(11M, deserialized.AskLevels[100M]);
+        }
+
+        [Test]
         public void orderbook_items_are_sorted()
         {
             var ob = new OrderBook
