@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using Lykke.Common.ExchangeAdapter.Contracts;
 using Newtonsoft.Json;
@@ -8,6 +9,8 @@ namespace Lykke.Common.ExchangeAdapter.Tests
 {
     public class deserialize_tests
     {
+        private static OrderBook ob;
+
         [Test]
         public void order_book()
         {
@@ -63,6 +66,49 @@ namespace Lykke.Common.ExchangeAdapter.Tests
             var deserialized = JsonConvert.DeserializeObject<OrderBook>(serialized);
 
             Assert.AreEqual(11M, deserialized.AskLevels[100M]);
+        }
+
+        [Test, Repeat(10)]
+        public void timing()
+        {
+            ob = GenerateSampleOrderBook();
+
+            var serialized = JsonConvert.SerializeObject(ob);
+
+            var sw = Stopwatch.StartNew();
+
+            var count = 1000;
+            for (int i = 0; i < count; i++)
+            {
+                var _ = JsonConvert.DeserializeObject<OrderBook>(serialized);
+            }
+
+            Console.WriteLine(sw.Elapsed);
+            sw.Stop();
+        }
+
+        private OrderBook GenerateSampleOrderBook()
+        {
+            var middle = 8000M;
+            var count = 101;
+            var orderbookSpread = 0.01M;
+            var depth = 0.2M;
+            var volume = 0.1356M;
+
+            var minAsk = middle * (1 + orderbookSpread / 2);
+            var maxBid = middle * (1 - orderbookSpread / 2);
+
+            var minBid = middle * (1 - depth / 2);
+            var maxAsk = middle * (1 + depth / 2);
+
+            var bidStep = (maxBid - minBid) / (count - 1);
+            var askStep = (maxAsk - minAsk) / (count - 1);
+
+            return new OrderBook("source", "ASSET", DateTime.UtcNow,
+                asks: Enumerable.Range(0, count).Select(x => minAsk + x * askStep)
+                    .Select(p => new OrderBookItem(p, volume)),
+                bids: Enumerable.Range(0, count).Select(x => maxBid - x * bidStep)
+                    .Select(p => new OrderBookItem(p, volume)));
         }
 
         [Test]
