@@ -4,7 +4,7 @@
     <Version>1.0.1-alpha01</Version>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Lykke.Common.ExchangeAdapter" Version="3.2.0" />
-    <PackageReference Include="Lykke.HttpClientGenerator" Version="1.0.0" />
+    <PackageReference Include="Lykke.Common.ExchangeAdapter" Version="3.6.0" />
+    <PackageReference Include="Lykke.HttpClientGenerator" Version="2.1.2" />
   </ItemGroup>
 </Project>
