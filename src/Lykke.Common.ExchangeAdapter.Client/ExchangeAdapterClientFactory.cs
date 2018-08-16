@@ -35,6 +35,7 @@ namespace Lykke.Common.ExchangeAdapter.Client
 
              var builder = new HttpClientGeneratorBuilder(endpoint.Uri.ToString())
                  .WithAdditionalDelegatingHandler(new XApiKeyHandler(endpoint.XApiKey))
+                 .WithAdditionalDelegatingHandler(new HandleBusinessExceptionsHandler())
                  .WithoutRetries()
                  .Create();
 
