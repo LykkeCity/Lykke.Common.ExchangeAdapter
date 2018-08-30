@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Common.Log;
 using Lykke.Common.Log;
 
-namespace Lykke.Common.ExchangeAdapter.Server.Fuck
+namespace Lykke.Common.ExchangeAdapter.Server
 {
     public class LoggingHandler : DelegatingHandler
     {
