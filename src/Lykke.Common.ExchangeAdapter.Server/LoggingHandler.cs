@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Common.Log;
 using Lykke.Common.Log;
 
-namespace Lykke.Common.ExchangeAdapter.Server
+namespace Lykke.Common.ExchangeAdapter.Server.Fuck
 {
     public class LoggingHandler : DelegatingHandler
     {
