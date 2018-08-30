@@ -142,7 +142,7 @@ namespace Lykke.ExchangeAdapter.ConsoleClient
                 {stub, new AdapterEndpoint(_options.ApiKey, new Uri(_options.AdapterUrl))}
             });
 
-            return factory[stub];
+            return factory.GetSpotController(stub);
         }
 
         private static async Task GetBalances()
