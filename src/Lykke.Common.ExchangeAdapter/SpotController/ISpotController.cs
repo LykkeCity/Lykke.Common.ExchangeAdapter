@@ -45,7 +45,7 @@ namespace Lykke.Common.ExchangeAdapter.SpotController
         /// <summary>
         /// Replace limit order. Cancel one and create new. 
         /// </summary>
-        [Get("/spot/replaceLimitOrder")]
+        [Post("/spot/replaceLimitOrder")]
         Task<OrderIdResponse> ReplaceLimitOrderAsync(ReplaceLimitOrderRequest request);
 
         /// <summary>
