@@ -21,8 +21,9 @@ namespace Lykke.Common.InternalExchange.Client.Controllers
         /// <summary>
         /// Method to request order.
         /// </summary>
+        /// <param name="orderId">Id of the order.</param>
         /// <returns>Information about order.</returns>
-        [Get("/api/InternalTrader/Order")]
-        Task<GetOrderResponse> GetOrderAsync(GetOrderRequest model);
+        [Get("/api/InternalTrader/Order/{orderId}")]
+        Task<GetOrderResponse> GetOrderAsync(string orderId);
     }
 }
