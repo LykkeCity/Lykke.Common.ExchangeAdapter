@@ -3,16 +3,21 @@
     <PropertyGroup>
         <TargetFramework>netcoreapp2.1</TargetFramework>
         <Version>1.0.6</Version>
+        <Authors>Lykke</Authors>
+        <Company>Lykke</Company>
+        <Product>Lykke.Common.InternalExchange.Client</Product>
+        <Description>Client internal trader API.</Description>
+        <PackageLicenseUrl>https://github.com/LykkeCity/Lykke.Common.ExchangeAdapter/tree/master/src/Lykke.Common.InternalExchange.Client/LICENSE</PackageLicenseUrl>
+        <PackageProjectUrl>https://github.com/LykkeCity/Lykke.Common.ExchangeAdapter/tree/master/src/Lykke.Common.InternalExchange.Client</PackageProjectUrl>
+        <PackageIconUrl>https://avatars3.githubusercontent.com/u/14153330?v=3&amp;s=200</PackageIconUrl>
+        <RepositoryUrl>https://github.com/LykkeCity/Lykke.Common.ExchangeAdapter.git</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>Lykke</PackageTags>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Refit" Version="4.6.58" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="JetBrains.Annotations, Version=11.1.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325">
-        <HintPath>..\..\..\..\.nuget\packages\jetbrains.annotations\11.1.0\lib\netstandard1.0\JetBrains.Annotations.dll</HintPath>
-      </Reference>
+        <PackageReference Include="Refit" Version="4.6.58" />
+        <PackageReference Include="JetBrains.Annotations" Version="11.1.0.0" />
     </ItemGroup>
 
 </Project>

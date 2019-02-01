@@ -15,7 +15,7 @@ namespace Lykke.Common.InternalExchange.Client.Controllers
         /// Method to create order.
         /// </summary>
         /// <returns>Minimal information about order.</returns>
-        [Post("/api/InternalTrader/Order")]
+        [Post("/api/InternalTrader/Orders")]
         Task<CreateOrderResponse> CreateOrderAsync(CreateOrderRequest model);
         
         /// <summary>
@@ -23,7 +23,7 @@ namespace Lykke.Common.InternalExchange.Client.Controllers
         /// </summary>
         /// <param name="orderId">Id of the order.</param>
         /// <returns>Information about order.</returns>
-        [Get("/api/InternalTrader/Order/{orderId}")]
-        Task<GetOrderResponse> GetOrderAsync(string orderId);
+        [Get("/api/InternalTrader/Orders/{orderId}")]
+        Task<OrderModel> GetOrderAsync(string orderId);
     }
 }
