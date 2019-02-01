@@ -1,5 +1,11 @@
+using JetBrains.Annotations;
+
 namespace Lykke.Common.InternalExchange.Client
 {
+    /// <summary>
+    /// Contains general errors that can be occurred during internal trading. 
+    /// </summary>
+    [PublicAPI]
     public static class Errors
     {
         /// <summary>
@@ -10,7 +16,7 @@ namespace Lykke.Common.InternalExchange.Client
         /// <summary>
         /// Used if client doesn't have enough balance.
         /// </summary>
-        public const string NotEnoughBalance = "Not enough funds to execute trade.";
+        public const string NotEnoughFunds = "Not enough funds to execute trade.";
 
         /// <summary>
         /// Used if robot was unable to transfer funds from client's wallet.
