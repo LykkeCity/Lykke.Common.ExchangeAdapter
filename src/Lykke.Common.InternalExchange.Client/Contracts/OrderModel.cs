@@ -1,5 +1,7 @@
 using System;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Lykke.Common.InternalExchange.Client.Contracts
 {
@@ -7,7 +9,7 @@ namespace Lykke.Common.InternalExchange.Client.Contracts
     /// Represents order.
     /// </summary>
     [PublicAPI]
-    public class GetOrderResponse
+    public class OrderModel
     {
         /// <summary>
         /// Id of the order.
@@ -17,6 +19,7 @@ namespace Lykke.Common.InternalExchange.Client.Contracts
         /// <summary>
         /// Status of the order.
         /// </summary>
+        [JsonConverter(typeof(StringEnumConverter))]
         public OrderStatus Status { set; get; }
         
         /// <summary>
@@ -32,6 +35,7 @@ namespace Lykke.Common.InternalExchange.Client.Contracts
         /// <summary>
         /// Direction of the order.
         /// </summary>
+        [JsonConverter(typeof(StringEnumConverter))]
         public OrderType Type { set; get; }
         
         /// <summary>
