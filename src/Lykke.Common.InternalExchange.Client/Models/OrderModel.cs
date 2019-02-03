@@ -66,6 +66,6 @@ namespace Lykke.Common.InternalExchange.Client.Models
         /// <summary>
         /// DateTime when order was created.
         /// </summary>
-        public DateTime CreateDate { set; get; }
+        public DateTime CreatedDate { set; get; }
     }
 }
