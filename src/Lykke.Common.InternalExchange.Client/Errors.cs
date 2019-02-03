@@ -27,5 +27,15 @@ namespace Lykke.Common.InternalExchange.Client
         /// Used if no orders were found to match original requirements.
         /// </summary>
         public const string NotEnoughLiquidity = "Not enough liquidity for requested price.";
+
+        /// <summary>
+        /// Used if requested volume was less than minimum volume for the given asset pair.
+        /// </summary>
+        public const string TooSmallVolume = "Requested volume too small.";
+
+        /// <summary>
+        /// Used if requested volume's accuracy was different than the given asset pair's accuracy.
+        /// </summary>
+        public const string InvalidVolume = "Requested volume invalid.";
     }
 }
