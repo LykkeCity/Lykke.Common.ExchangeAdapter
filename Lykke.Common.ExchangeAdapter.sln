@@ -2,17 +2,24 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lykke.Common.ExchangeAdapter", "src\Lykke.Common.ExchangeAdapter\Lykke.Common.ExchangeAdapter.csproj", "{11825C59-4F4B-4427-BEE7-A210559F041A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lykke.Common.ExchangeAdapter.Grpc", "src\Lykke.Common.ExchangeAdapter.Grpc\Lykke.Common.ExchangeAdapter.Grpc.csproj", "{84505630-A394-4A19-8A4A-5AF7DC699145}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lykke.Common.ExchangeAdapter.Client", "src\Lykke.Common.ExchangeAdapter.Client\Lykke.Common.ExchangeAdapter.Client.csproj", "{4037ACE8-8860-4CE2-AFFC-8F0D027FBE25}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lykke.Common.ExchangeAdapter.Tests", "tests\Lykke.Common.ExchangeAdapter.Tests\Lykke.Common.ExchangeAdapter.Tests.csproj", "{24F46D2F-6FD5-49B7-9026-2A4EC6EA680D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lykke.ExchangeAdapter.ConsoleClient", "src\Lykke.ExchangeAdapter.ConsoleClient\Lykke.ExchangeAdapter.ConsoleClient.csproj", "{2958A1B2-AAFC-489F-9EDB-E10BB744133C}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lykke.Common.ExchangeAdapter.Server", "src\Lykke.Common.ExchangeAdapter.Server\Lykke.Common.ExchangeAdapter.Server.csproj", "{623628A6-4FC4-4863-A7E2-97B2A9F5BD96}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lykke.Common.InternalExchange.Client", "src\Lykke.Common.InternalExchange.Client\Lykke.Common.InternalExchange.Client.csproj", "{D7D52014-88DE-4233-829F-31319BD7A7E5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{7E30DC81-90FB-4428-A180-7A13FB74A4E5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{60C044B2-467F-497A-9972-10F0A1A37F0B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0. Solution items", "0. Solution items", "{2BDAA75A-B31F-4953-A48F-ACFFB618C8F7}"
+ProjectSection(SolutionItems) = preProject
+	.gitignore = .gitignore
+	LICENSE = LICENSE
+	README.md = README.md
+EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,10 +31,6 @@ Global
 		{11825C59-4F4B-4427-BEE7-A210559F041A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11825C59-4F4B-4427-BEE7-A210559F041A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11825C59-4F4B-4427-BEE7-A210559F041A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{84505630-A394-4A19-8A4A-5AF7DC699145}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{84505630-A394-4A19-8A4A-5AF7DC699145}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{84505630-A394-4A19-8A4A-5AF7DC699145}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{84505630-A394-4A19-8A4A-5AF7DC699145}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4037ACE8-8860-4CE2-AFFC-8F0D027FBE25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4037ACE8-8860-4CE2-AFFC-8F0D027FBE25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4037ACE8-8860-4CE2-AFFC-8F0D027FBE25}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -36,10 +39,6 @@ Global
 		{24F46D2F-6FD5-49B7-9026-2A4EC6EA680D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24F46D2F-6FD5-49B7-9026-2A4EC6EA680D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24F46D2F-6FD5-49B7-9026-2A4EC6EA680D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2958A1B2-AAFC-489F-9EDB-E10BB744133C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2958A1B2-AAFC-489F-9EDB-E10BB744133C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2958A1B2-AAFC-489F-9EDB-E10BB744133C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2958A1B2-AAFC-489F-9EDB-E10BB744133C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{623628A6-4FC4-4863-A7E2-97B2A9F5BD96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{623628A6-4FC4-4863-A7E2-97B2A9F5BD96}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{623628A6-4FC4-4863-A7E2-97B2A9F5BD96}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -48,5 +47,10 @@ Global
 		{D7D52014-88DE-4233-829F-31319BD7A7E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D7D52014-88DE-4233-829F-31319BD7A7E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D7D52014-88DE-4233-829F-31319BD7A7E5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4037ACE8-8860-4CE2-AFFC-8F0D027FBE25} = {7E30DC81-90FB-4428-A180-7A13FB74A4E5}
+		{D7D52014-88DE-4233-829F-31319BD7A7E5} = {7E30DC81-90FB-4428-A180-7A13FB74A4E5}
+		{24F46D2F-6FD5-49B7-9026-2A4EC6EA680D} = {60C044B2-467F-497A-9972-10F0A1A37F0B}
 	EndGlobalSection
 EndGlobal

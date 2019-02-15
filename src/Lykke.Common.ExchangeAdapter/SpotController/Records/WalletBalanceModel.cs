@@ -2,27 +2,27 @@
 
 namespace Lykke.Common.ExchangeAdapter.SpotController.Records
 {
+    /// <summary>
+    /// Represents an asset balance details.
+    /// </summary>
     public class WalletBalanceModel
     {
-        private string _asset;
-
+        /// <summary>
+        /// The asset.
+        /// </summary>
         [JsonProperty("asset")]
-        public string Asset
-        {
-            get => _asset;
-            set => _asset = value?.ToUpperInvariant();
-        }
+        public string Asset { get; set; }
 
+        /// <summary>
+        /// The amount of asset.
+        /// </summary>
         [JsonProperty("balance")]
         public decimal Balance { get; set; }
 
-        //[JsonProperty("available")]
-        //public decimal Available { get; set; }
-
+        /// <summary>
+        /// The reserved amount of asset.
+        /// </summary>
         [JsonProperty("reserved")]
-        public decimal Reserved { get; set; } //Balance - available
-
-        //[JsonProperty("type")]
-        //public string Type { get; set; }
+        public decimal Reserved { get; set; }
     }
 }

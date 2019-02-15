@@ -6,38 +6,33 @@ using Newtonsoft.Json.Converters;
 
 namespace Lykke.Common.ExchangeAdapter.SpotController.Records
 {
+    /// <summary>
+    /// Represents a market order creation information.
+    /// </summary>
     public class MarketOrderRequest
     {
-        private string _instrument;
-
         /// <summary>
-        /// name of instrument (asset pair)
+        /// The asset pair.
         /// </summary>
-        [JsonProperty("instrument")]
         [Required]
-        public string Instrument
-        {
-            get => _instrument;
-            set => _instrument = value?.ToUpperInvariant();
-        }
+        [JsonProperty("instrument")]
+        public string Instrument { get; set; }
 
         /// <summary>
-        /// volume of order
+        /// The limit order volume.
         /// </summary>
-        [JsonProperty("amount")]
         [Required]
         [PositiveDecimal]
+        [JsonProperty("amount")]
         public decimal Volume { get; set; }
 
         /// <summary>
-        /// side of trade: Buy, Sell
+        /// The limit order type.
         /// </summary>
+        [Required]
+        [StrictEnumChecker]
         [JsonProperty("tradeType")]
         [JsonConverter(typeof(StringEnumConverter))]
-        [StrictEnumChecker]
-        [Required]
-        public TradeType TradeType { get; set; } //needs validation
-
-
+        public TradeType TradeType { get; set; }
     }
 }

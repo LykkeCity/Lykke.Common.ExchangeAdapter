@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
 using Lykke.Common.ExchangeAdapter.Server.Fails;
@@ -15,20 +16,14 @@ namespace Lykke.Common.ExchangeAdapter.Client
             HttpRequestMessage request,
             CancellationToken cancellationToken)
         {
-            var response = await base.SendAsync(request, cancellationToken);
+            HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
 
             if (response.StatusCode == HttpStatusCode.NotImplemented)
-            {
                 throw new NotImplementedException();
-            }
 
-            // if (response.Headers[])
-            if (response.StatusCode == HttpStatusCode.BadRequest
-                && response.Content.Headers.TryGetValues("Content-Type", out var values))
+            if (response.StatusCode == HttpStatusCode.BadRequest)
             {
-                var contentType = values.FirstOrDefault();
-
-                if (contentType == "text/plain")
+                if (response.Content.Headers.ContentType?.MediaType == MediaTypeNames.Text.Plain)
                 {
                     var content = await response.Content.ReadAsStringAsync();
 
@@ -42,12 +37,10 @@ namespace Lykke.Common.ExchangeAdapter.Client
                         {"instrumentIsNotSupported", msg => new InvalidInstrumentException(msg)}
                     };
 
-                    foreach (var kv in errors)
+                    foreach (var pair in errors)
                     {
-                        if (content.StartsWith(kv.Key))
-                        {
-                            throw kv.Value(content.Substring(kv.Key.Length));
-                        }
+                        if (content.StartsWith(pair.Key))
+                            throw pair.Value(content.Substring(pair.Key.Length));
                     }
                 }
             }

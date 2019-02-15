@@ -5,34 +5,31 @@ using Newtonsoft.Json.Converters;
 
 namespace Lykke.Common.ExchangeAdapter.SpotController.Records
 {
+    /// <summary>
+    /// Represents an order.
+    /// </summary>
     public class OrderModel
     {
-        private string _symbol;
-
         /// <summary>
-        /// OrderId
+        /// The identifier of order.
         /// </summary>
         [JsonProperty("orderId")]
         public string Id { get; set; }
 
         /// <summary>
-        /// The instrument (pair) name the order belongs to
+        /// The asset pair.
         /// </summary>
         [JsonProperty("instrument")]
-        public string Symbol
-        {
-            get => _symbol;
-            set => _symbol = value?.ToUpperInvariant();
-        }
+        public string AssetPair { get; set; }
 
         /// <summary>
-        /// The price the order was issued at
+        /// The price the order was issued at.
         /// </summary>
         [JsonProperty("price")]
         public decimal Price { get; set; }
 
         /// <summary>
-        /// What was the order originally submitted for?
+        /// The original volume of limit order.
         /// </summary>
         [JsonProperty("originalAmount")]
         public decimal OriginalVolume { get; set; }
@@ -40,7 +37,8 @@ namespace Lykke.Common.ExchangeAdapter.SpotController.Records
         /// <summary>
         /// type of trade: “Buy”, “Sell”
         /// </summary>
-        [JsonProperty("tradeType"), JsonConverter(typeof(StringEnumConverter))]
+        [JsonProperty("tradeType")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public TradeType TradeType { get; set; }
 
         /// <summary>
