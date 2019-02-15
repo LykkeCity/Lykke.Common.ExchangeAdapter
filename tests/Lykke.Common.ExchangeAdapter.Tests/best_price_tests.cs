@@ -40,7 +40,7 @@ namespace Lykke.Common.ExchangeAdapter.Tests
 
             Assert.AreEqual(ts, tp.Timestamp);
             Assert.AreEqual("source", tp.Source);
-            Assert.AreEqual("ASSET", tp.Asset);
+            Assert.AreEqual("asset", tp.Asset);
             Assert.AreEqual(0M, tp.Ask);
             Assert.AreEqual(0M, tp.Bid);
         }

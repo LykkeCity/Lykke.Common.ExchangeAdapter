@@ -42,7 +42,7 @@ namespace Lykke.Common.ExchangeAdapter.Tests
 
             var deserialized = JsonConvert.DeserializeObject<OrderBook>(serialized);
 
-            var sample = new OrderBook("source", "asset", DateTime.Parse("2018-07-05T09:27:45.661257Z"), new[]
+            var sample = new OrderBook("source", "ASSET", DateTime.Parse("2018-07-05T09:27:45.661257Z"), new[]
             {
                 new OrderBookItem(100, 5),
                 new OrderBookItem(120, 5),

@@ -1,8 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <Version>1.0.6</Version>
+    <Version>1.0.1</Version>
+    <Authors>Lykke</Authors>
+    <Company>Lykke</Company>
+    <Product>Lykke.Common.ExchangeAdapter</Product>
+    <Description>Common contracts for Lykke exchange adapters API</Description>
+    <PackageLicenseUrl>https://github.com/LykkeCity/Lykke.Common.ExchangeAdapter/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/LykkeCity/Lykke.Common.ExchangeAdapter</PackageProjectUrl>
+    <PackageIconUrl>https://avatars3.githubusercontent.com/u/14153330?v=3&amp;s=200</PackageIconUrl>
+    <RepositoryUrl>https://github.com/LykkeCity/Lykke.Common.ExchangeAdapter.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>Lykke</PackageTags>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="$(AssemblyName).xml" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="Refit" Version="4.2.0" />
