@@ -23,7 +23,7 @@
     <None Remove="$(AssemblyName).xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Lykke.Common.ExchangeAdapter" Version="3.6.0" />
+    <PackageReference Include="Lykke.Common.ExchangeAdapter" Version="5.0.1" />
     <PackageReference Include="Lykke.HttpClientGenerator" Version="2.3.0" />
     <PackageReference Include="Lykke.SettingsReader" Version="5.0.0" />
   </ItemGroup>
